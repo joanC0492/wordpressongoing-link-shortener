@@ -1,0 +1,355 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: fulltimeforce-link-shortener 1.0.0\n"
+"Language: es_ES\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Domain: fulltimeforce-link-shortener\n"
+
+msgid "Are you sure you want to delete this link? This action cannot be undone."
+msgstr "¿Estás seguro de que quieres eliminar este enlace? Esta acción no se puede deshacer."
+
+msgid "Delete this alias? The link will stop working."
+msgstr "¿Eliminar este alias? El enlace dejará de funcionar."
+
+msgid "Copied!"
+msgstr "¡Copiado!"
+
+msgid "Copy error"
+msgstr "Error al copiar"
+
+msgid "Generating..."
+msgstr "Generando..."
+
+msgid "Rotating..."
+msgstr "Rotando..."
+
+msgid "Deleting..."
+msgstr "Eliminando..."
+
+msgid "Error:"
+msgstr "Error:"
+
+msgid "Success:"
+msgstr "Éxito:"
+
+msgid "Incomplete data"
+msgstr "Datos incompletos"
+
+msgid "Could not obtain security token"
+msgstr "No se pudo obtener el token de seguridad"
+
+msgid "Connection error"
+msgstr "Error de conexión"
+
+msgid "Copy failed. Select and copy manually:"
+msgstr "Error al copiar. Selecciona y copia manualmente:"
+
+msgid "Link copied:"
+msgstr "Enlace copiado:"
+
+msgid "Generate short link"
+msgstr "Generar short link"
+
+msgid "No URL to copy"
+msgstr "No hay URL para copiar"
+
+msgid "URL must start with http:// or https:// and include a valid domain"
+msgstr "La URL debe comenzar con http:// o https:// e incluir un dominio válido"
+
+msgid "Domain does not seem valid"
+msgstr "El dominio no parece ser válido"
+
+msgid "Error validating URL"
+msgstr "Error al validar URL"
+
+msgid "Connection error while validating URL"
+msgstr "Error de conexión al validar URL"
+
+msgid "Cannot save: the slug is already in use. Please choose another slug."
+msgstr "No se puede guardar: el slug ya está en uso. Por favor, elige otro slug."
+
+msgid "Are you sure you want to move this link to trash?"
+msgstr "¿Estás seguro de que quieres mover este enlace a la papelera?"
+
+msgid "Settings"
+msgstr "Ajustes"
+
+msgid "Links"
+msgstr "Enlaces"
+
+msgid "URL must start with http:// or https://"
+msgstr "La URL debe comenzar con http:// o https://"
+
+msgid "Valid URL"
+msgstr "URL válida"
+
+msgid "Rotate Slug"
+msgstr "Rotar Slug"
+
+msgid "Delete"
+msgstr "Eliminar"
+
+msgid "Regenerate"
+msgstr "Regenerar"
+
+msgid "Regenerating..."
+msgstr "Regenerando..."
+
+msgid "Link generated and copied to clipboard:"
+msgstr "Enlace generado y copiado al portapapeles:"
+
+msgid "Link generated. Could not copy automatically:"
+msgstr "Enlace generado. No se pudo copiar automáticamente:"
+
+msgid "Link ID required"
+msgstr "ID de enlace requerido"
+
+msgid "Original URL required"
+msgstr "URL original requerida"
+
+msgid "Generate a new short link? The current link will keep working."
+msgstr "¿Generar un nuevo enlace corto? El enlace actual seguirá funcionando."
+
+msgid "Cancel"
+msgstr "Cancelar"
+
+msgid "Close modal"
+msgstr "Cerrar modal"
+
+msgid "Choose how you want to update this link's slug:"
+msgstr "Elige cómo quieres actualizar el slug de este enlace:"
+
+msgid "Replace slug"
+msgstr "Reemplazar slug"
+
+msgid "The previous slug will stop working"
+msgstr "El slug anterior dejará de funcionar"
+
+msgid "Add alias"
+msgstr "Añadir alias"
+
+msgid "The previous slug will keep working"
+msgstr "El slug anterior seguirá funcionando"
+
+msgid "New slug (optional):"
+msgstr "Nuevo slug (opcional):"
+
+msgid "Leave empty to generate automatically"
+msgstr "Dejar vacío para generar automáticamente"
+
+msgid "Slug available"
+msgstr "Slug disponible"
+
+msgid "Slug not available"
+msgstr "Slug no disponible"
+
+msgid "This slug is reserved"
+msgstr "Este slug está reservado"
+
+msgid "Prefix must be at least 1 character"
+msgstr "El prefijo debe tener al menos 1 carácter"
+
+msgid "Prefix cannot be more than 20 characters"
+msgstr "El prefijo no puede tener más de 20 caracteres"
+
+msgid "Only letters, numbers, dashes (-) and underscores (_) are allowed"
+msgstr "Solo se permiten letras, números, guiones (-) y guiones bajos (_)"
+
+msgid "Valid prefix"
+msgstr "Prefijo válido"
+
+msgid "Link Shortener Settings"
+msgstr "Ajustes del Link Shortener"
+
+msgid "Link preview:"
+msgstr "Vista previa del enlace:"
+
+msgid "Save Settings"
+msgstr "Guardar Configuración"
+
+msgid "Prefix History"
+msgstr "Historial de Prefijos"
+
+msgid "All previously used prefixes remain active to preserve existing links. New links will use the current prefix."
+msgstr "Todos los prefijos utilizados anteriormente se mantienen activos para preservar los enlaces existentes. Los nuevos enlaces usarán el prefijo actual."
+
+msgid "Current"
+msgstr "Actual"
+
+msgid "Statistics"
+msgstr "Estadísticas"
+
+msgid "Links created"
+msgstr "Enlaces creados"
+
+msgid "Prefixes used"
+msgstr "Prefijos usados"
+
+msgid "Help"
+msgstr "Ayuda"
+
+msgid "Prefix:"
+msgstr "Prefijo:"
+
+msgid "Only enter the prefix without slashes (e.g., l, short, go)"
+msgstr "Solo ingresa el prefijo sin slashes (ej: l, short, go)"
+
+msgid "Changes:"
+msgstr "Cambios:"
+
+msgid "Existing links will keep their original prefix"
+msgstr "Los enlaces existentes mantendrán su prefijo original"
+
+msgid "Example:"
+msgstr "Ejemplo:"
+
+msgid "With prefix \"l\" the link will be domain.com/l/slug"
+msgstr "Con prefijo \"l\" el enlace será dominio.com/l/slug"
+
+msgid "General Settings"
+msgstr "Configuración General"
+
+msgid "Short link prefix"
+msgstr "Prefijo del enlace corto"
+
+msgid "Configure the prefix used for new short links."
+msgstr "Configura el prefijo que se usará para los nuevos enlaces cortos."
+
+msgid "Only enter the prefix (e.g., l, short, go). Only letters, numbers, dashes (-) and underscores (_) are allowed."
+msgstr "Solo ingresa el prefijo (ej: l, short, go). Solo letras, números, guiones (-) y guiones bajos (_) permitidos."
+
+msgid "Note:"
+msgstr "Nota:"
+
+msgid "The short link will be created when saving. If you do not specify a slug, one will be generated automatically."
+msgstr "El enlace corto se creará al guardar. Si no especificas un slug, se generará uno automáticamente."
+
+msgid "Descriptive label to organize your links (maximum 50 characters)"
+msgstr "Etiqueta descriptiva para organizar tus enlaces (máximo 50 caracteres)"
+
+msgid "Optional. If left empty, one will be generated automatically. Only letters, numbers, dashes and underscores are allowed."
+msgstr "Opcional. Si se deja vacío, se generará automáticamente. Solo letras, números, guiones y guiones bajos permitidos."
+msgid "This plugin requires PHP 7.4 or higher."
+msgstr "Este plugin requiere PHP 7.4 o superior."
+
+msgid "This plugin requires WordPress 5.0 or higher."
+msgstr "Este plugin requiere WordPress 5.0 o superior."
+
+msgid "Short Links"
+msgstr "Enlaces Cortos"
+
+msgid "Short Link"
+msgstr "Enlace Corto"
+
+msgid "Add New"
+msgstr "Crear Nuevo"
+
+msgid "Add New Link"
+msgstr "Crear Nuevo Enlace"
+
+msgid "Edit Link"
+msgstr "Editar Enlace"
+
+msgid "New Link"
+msgstr "Nuevo Enlace"
+
+msgid "View Link"
+msgstr "Ver Enlace"
+
+msgid "Search Links"
+msgstr "Buscar Enlaces"
+
+msgid "No links found"
+msgstr "No se encontraron enlaces"
+
+msgid "No links in trash"
+msgstr "No hay enlaces en la papelera"
+
+msgid "All Links"
+msgstr "Todos los Enlaces"
+
+msgid "Original URL"
+msgstr "URL Original"
+
+msgid "Tag"
+msgstr "Tag"
+
+msgid "Actions"
+msgstr "Acciones"
+
+msgid "Copy"
+msgstr "Copiar"
+
+msgid "Edit"
+msgstr "Editar"
+
+msgid "Delete"
+msgstr "Eliminar"
+
+msgid "Link Data"
+msgstr "Datos del Enlace"
+
+msgid "Must start with http:// or https://"
+msgstr "Debe comenzar con http:// o https://"
+
+msgid "Full URL you want to shorten. Must include http:// or https://"
+msgstr "La URL completa que quieres acortar. Debe incluir http:// o https://"
+
+msgid "Custom slug"
+msgstr "Slug personalizado"
+
+msgid "Full link:"
+msgstr "Enlace completo:"
+
+msgid "Note:"
+msgstr "Nota:"
+
+msgid "The short link will be created when saving. If you do not specify a slug, one will be generated automatically."
+msgstr "El enlace corto se creará al guardar. Si no especificas un slug, se generará uno automáticamente."
+
+msgid "Error: Original URL is required."
+msgstr "Error: La URL original es obligatoria."
+
+msgid "Error: URL must be valid and start with http:// or https://"
+msgstr "Error: La URL debe ser válida y comenzar con http:// o https://"
+
+msgid "Error: URL must include a valid domain."
+msgstr "Error: La URL debe incluir un dominio válido."
+
+msgid "Error: You cannot create a short link that points to another short link on the same site."
+msgstr "Error: No se puede crear un enlace corto que apunte a otro enlace corto del mismo sitio."
+
+msgid "Error: The slug \"%s\" is reserved. Please choose another."
+msgstr "Error: El slug \"%s\" está reservado. Por favor, elige otro."
+
+msgid "Error: The slug \"%1$s\" is already in use. Suggestion: \"%2$s\""
+msgstr "Error: El slug \"%1$s\" ya está en uso. Sugerencia: \"%2$s\""
+
+msgid "Short link created:"
+msgstr "Enlace corto creado:"
+
+msgid "Link Shortener"
+msgstr "Link Shortener"
+
+msgid "Welcome to the main Link Shortener configuration panel."
+msgstr "Bienvenido al panel principal de configuración del Link Shortener."
+
+msgid "Plugin Summary"
+msgstr "Resumen del Plugin"
+
+msgid "This plugin allows you to create custom short links"
+msgstr "Este plugin te permite crear enlaces cortos personalizados"
+
+msgid "Quick Access"
+msgstr "Accesos Rápidos"
+
+msgid "View All Links"
+msgstr "Ver Todos los Enlaces"
+
+msgid "Add New Link"
+msgstr "Agregar Nuevo Enlace"
+
+msgid "Manage Categories"
+msgstr "Gestionar Categorías"

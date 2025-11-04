@@ -1,0 +1,25 @@
+INSTRUCTIONS.md
+vendor
+<!-- readme.md -->
+node_modules
+composer.lock
+
+# Archivos de test y debug temporales
+test-translations.php
+compile-mo.php
+debug-*.php
+test-*.php
+
+# Archivos de desarrollo
+*.log
+*.tmp
+.DS_Store
+Thumbs.db
+
+# Backups
+*.bak
+*.backup
+
+# Documentación opcional (descomenta si no quieres incluirla en git)
+# TECHNICAL-DOCS.md
+# BLOG-POST.md

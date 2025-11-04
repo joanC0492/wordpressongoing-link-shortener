@@ -1,0 +1,896 @@
+/**
+ * Estilos para el Link Shortener Plugin
+ */
+
+/* ==========================================================================
+   Componentes Generales
+   ========================================================================== */
+
+.ls-short-link-display {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.ls-short-link-display code {
+  background: #f8f9fa;
+  border: 1px solid #e9ecef;
+  padding: 4px 8px;
+  border-radius: 3px;
+  font-family: Monaco, Consolas, "Andale Mono", "DejaVu Sans Mono", monospace;
+  font-size: 12px;
+  color: #495057;
+  max-width: 300px;
+  word-break: break-all;
+}
+
+.ls-link-actions {
+  display: flex;
+  gap: 5px;
+}
+
+.ls-link-actions .button {
+  padding: 2px 8px;
+  font-size: 11px;
+  line-height: 1.4;
+  height: auto;
+  min-height: auto;
+}
+
+/* Botones especiales */
+.button.ls-copied {
+  background: #00a32a !important;
+  border-color: #00a32a !important;
+  color: white !important;
+  pointer-events: none;
+}
+
+.button.ls-generate-link:disabled {
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+/* ==========================================================================
+   Modales
+   ========================================================================== */
+
+.ls-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  z-index: 100000;
+  display: none;
+}
+
+.ls-modal {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: white;
+  border-radius: 4px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+  max-width: 500px;
+  width: 90%;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.ls-modal-header {
+  padding: 20px 20px 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #e9ecef;
+  margin-bottom: 20px;
+}
+
+.ls-modal-header h2 {
+  margin: 0;
+  font-size: 18px;
+  color: #333;
+}
+
+.ls-modal-close {
+  background: none;
+  border: none;
+  font-size: 24px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 3px;
+  color: #666;
+}
+
+.ls-modal-close:hover {
+  background: #f8f9fa;
+  color: #333;
+}
+
+.ls-modal-body {
+  padding: 0 20px 20px;
+}
+
+.ls-modal-footer {
+  padding: 15px 20px 20px;
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  border-top: 1px solid #e9ecef;
+  margin-top: 20px;
+}
+
+/* Opciones de rotación */
+.ls-rotate-options {
+  margin: 20px 0;
+}
+
+.ls-option {
+  margin-bottom: 15px;
+  padding: 15px;
+  border: 1px solid #e9ecef;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+.ls-option:hover {
+  border-color: #007cba;
+  background: #f8f9fa;
+}
+
+.ls-option label {
+  display: block;
+  cursor: pointer;
+  margin: 0;
+  font-weight: normal;
+}
+
+.ls-option input[type="radio"] {
+  margin-right: 10px;
+}
+
+.ls-option .description {
+  display: block;
+  margin-top: 5px;
+  color: #666;
+  font-size: 12px;
+  font-style: italic;
+}
+
+.ls-new-slug-field {
+  margin-top: 20px;
+}
+
+.ls-new-slug-field label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: 600;
+}
+
+.ls-new-slug-field input {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 3px;
+  font-family: Monaco, Consolas, monospace;
+}
+
+/* ==========================================================================
+   Validaciones
+   ========================================================================== */
+
+.ls-validation-message {
+  margin-top: 8px;
+  padding: 8px 12px;
+  border-radius: 3px;
+  font-size: 12px;
+  line-height: 1.4;
+  display: none;
+  font-weight: 500;
+}
+
+.ls-validation-message.error {
+  background: #ffeaea;
+  border: 1px solid #ff6b6b;
+  color: #d63031;
+  display: block;
+}
+
+.ls-validation-message.success {
+  background: #eafaf1;
+  border: 1px solid #27ae60;
+  color: #00b894;
+  display: block;
+}
+
+/* Estados de campos con validación */
+input.ls-invalid {
+  border-color: #ff6b6b !important;
+  box-shadow: 0 0 0 1px #ff6b6b !important;
+}
+
+input.ls-valid {
+  border-color: #27ae60 !important;
+  box-shadow: 0 0 0 1px #27ae60 !important;
+}
+
+/* Estados específicos para slug */
+input.ls-slug-invalid {
+  border-color: #ff6b6b !important;
+  box-shadow: 0 0 0 1px #ff6b6b !important;
+  background-color: #fff5f5 !important;
+}
+
+input.ls-slug-valid {
+  border-color: #27ae60 !important;
+  box-shadow: 0 0 0 1px #27ae60 !important;
+  background-color: #f0fff4 !important;
+}
+
+/* Botón de actualizar deshabilitado */
+#publish.ls-disabled,
+#save-post.ls-disabled,
+.editor-post-publish-button.ls-disabled {
+  opacity: 0.6 !important;
+  cursor: not-allowed !important;
+  background-color: #f0f0f0 !important;
+  border-color: #ddd !important;
+  color: #999 !important;
+  pointer-events: none !important;
+}
+
+/* Indicador visual adicional cuando el botón está deshabilitado */
+#publish.ls-disabled::after,
+#save-post.ls-disabled::after {
+  content: " (Slug duplicado)";
+  font-size: 11px;
+  color: #d63031;
+  font-weight: normal;
+}
+
+/* Validación HTML5 personalizada */
+input:invalid {
+  border-color: #ff6b6b;
+  box-shadow: 0 0 0 1px rgba(255, 107, 107, 0.25);
+}
+
+/* input:valid {
+  border-color: #27ae60;
+  box-shadow: 0 0 0 1px rgba(39, 174, 96, 0.25);
+} */
+
+/* ==========================================================================
+   Metabox Estilos
+   ========================================================================== */
+
+.ls-slug-preview {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  max-width: 100%;
+}
+
+.ls-domain {
+  background: #f1f1f1;
+  padding: 6px 8px;
+  border: 1px solid #ddd;
+  border-right: none;
+  border-radius: 3px 0 0 3px;
+  font-family: Monaco, Consolas, monospace;
+  font-size: 13px;
+  color: #495057;
+  white-space: nowrap;
+}
+
+#ls_slug {
+  border-radius: 0 3px 3px 0 !important;
+  font-family: Monaco, Consolas, monospace !important;
+  font-size: 13px !important;
+  min-width: 120px;
+  flex: 1;
+}
+
+.ls-slug-info {
+  margin-top: 15px !important;
+  padding: 15px !important;
+  background: #f8f9fa !important;
+  border-left: 4px solid #007cba !important;
+  border-radius: 0 4px 4px 0 !important;
+}
+
+.ls-slug-info code {
+  background: white;
+  padding: 4px 8px;
+  border: 1px solid #e9ecef;
+  border-radius: 3px;
+  margin-right: 10px;
+}
+
+.ls-save-notice {
+  background: #fff3cd !important;
+  border: 1px solid #ffeaa7 !important;
+  color: #856404 !important;
+  padding: 15px !important;
+  border-radius: 4px !important;
+  margin-top: 20px !important;
+}
+
+/* ==========================================================================
+   Aliases
+   ========================================================================== */
+
+.ls-aliases-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.ls-alias-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  background: #f8f9fa;
+  border: 1px solid #e9ecef;
+  border-radius: 4px;
+}
+
+.ls-alias-item code {
+  flex: 1;
+  background: white;
+  margin: 0;
+}
+
+.ls-alias-item .button {
+  padding: 2px 8px;
+  font-size: 11px;
+  line-height: 1.4;
+}
+
+/* ==========================================================================
+   Columnas de la tabla admin
+   ========================================================================== */
+
+.column-short_link {
+  width: 250px;
+}
+
+.column-original_url {
+  width: 300px;
+}
+
+.column-tag {
+  width: 120px;
+}
+
+.column-actions {
+  width: 120px;
+}
+
+/* Enlaces en columnas */
+.column-original_url a {
+  text-decoration: none;
+  color: #0073aa;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.column-original_url a:hover {
+  color: #005a87;
+  text-decoration: underline;
+}
+
+.column-original_url .dashicons {
+  font-size: 14px;
+  width: 14px;
+  height: 14px;
+}
+
+/* ==========================================================================
+   Notificaciones
+   ========================================================================== */
+
+.ls-notice {
+  position: fixed;
+  top: 32px;
+  right: 20px;
+  z-index: 100001;
+  padding: 12px 16px;
+  border-radius: 4px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  font-size: 14px;
+  max-width: 400px;
+  word-wrap: break-word;
+  display: none;
+}
+
+.ls-notice-success {
+  background: #00a32a;
+  color: white;
+}
+
+.ls-notice-error {
+  background: #d63031;
+  color: white;
+}
+
+.ls-notice-info {
+  background: #007cba;
+  color: white;
+}
+
+/* ==========================================================================
+   Página de Ajustes
+   ========================================================================== */
+
+.ls-settings-container {
+  display: flex;
+  gap: 30px;
+  margin-top: 20px;
+}
+
+.ls-settings-main {
+  flex: 2;
+  min-width: 0;
+}
+
+.ls-settings-sidebar {
+  flex: 1;
+  min-width: 300px;
+}
+
+.ls-prefix-preview {
+  background: #f8f9fa;
+  border: 1px solid #e9ecef;
+  padding: 15px;
+  margin: 20px 0;
+  border-radius: 4px;
+}
+
+.ls-prefix-preview h4 {
+  margin: 0 0 10px 0;
+  color: #495057;
+  font-size: 14px;
+}
+
+.ls-prefix-preview code {
+  font-size: 14px;
+  font-weight: bold;
+  color: #007cba;
+  background: white;
+  padding: 4px 8px;
+  border: 1px solid #ddd;
+  border-radius: 3px;
+}
+
+.ls-prefix-history {
+  margin-top: 30px;
+  padding: 20px;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.ls-prefix-history h3 {
+  margin: 0 0 15px 0;
+  color: #495057;
+  font-size: 16px;
+}
+
+.ls-prefix-list {
+  list-style: none;
+  padding: 0;
+  margin: 15px 0 0 0;
+}
+
+.ls-prefix-list li {
+  padding: 10px 0;
+  border-bottom: 1px solid #f0f0f0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.ls-prefix-list li:last-child {
+  border-bottom: none;
+}
+
+.ls-prefix-list code {
+  background: #f8f9fa;
+  padding: 3px 6px;
+  border: 1px solid #e9ecef;
+  border-radius: 3px;
+  font-size: 12px;
+}
+
+.ls-current-badge {
+  background: #00a32a;
+  color: white;
+  padding: 2px 8px;
+  border-radius: 3px;
+  font-size: 11px;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+/* Widgets de la sidebar */
+.ls-stats-widget,
+.ls-help-widget {
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.ls-stats-widget h3,
+.ls-help-widget h3 {
+  margin: 0 0 15px 0;
+  color: #495057;
+  font-size: 16px;
+  border-bottom: 1px solid #f0f0f0;
+  padding-bottom: 10px;
+}
+
+.ls-stat-item {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 15px;
+  padding: 10px 0;
+  border-bottom: 1px solid #f8f9fa;
+}
+
+.ls-stat-item:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+}
+
+.ls-stat-number {
+  font-size: 24px;
+  font-weight: bold;
+  color: #007cba;
+  line-height: 1;
+}
+
+.ls-stat-label {
+  font-size: 13px;
+  color: #666;
+  margin-top: 2px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.ls-help-widget ul {
+  margin: 0;
+  padding-left: 15px;
+}
+
+.ls-help-widget li {
+  margin-bottom: 8px;
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.ls-help-widget strong {
+  color: #495057;
+}
+
+/* Campo de prefijo en ajustes */
+.ls-prefix-input-container {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  overflow: hidden;
+  background: white;
+  max-width: 100%;
+}
+
+.ls-domain-preview {
+  background: #f8f9fa;
+  padding: 8px 12px;
+  border-right: 1px solid #ddd;
+  font-family: Monaco, Consolas, monospace;
+  font-size: 13px;
+  color: #495057;
+  white-space: nowrap;
+}
+
+#ls_current_prefix {
+  border: none !important;
+  box-shadow: none !important;
+  margin: 0 !important;
+  font-family: Monaco, Consolas, monospace !important;
+  font-size: 13px !important;
+  min-width: 80px;
+  padding: 8px 12px !important;
+}
+
+.ls-slug-preview {
+  background: #e9ecef;
+  padding: 8px 12px;
+  border-left: 1px solid #ddd;
+  font-family: Monaco, Consolas, monospace;
+  font-size: 13px;
+  color: #6c757d;
+  font-style: italic;
+}
+
+/* ==========================================================================
+   Responsive
+   ========================================================================== */
+
+@media (max-width: 1200px) {
+  .ls-settings-container {
+    flex-direction: column;
+  }
+
+  .ls-settings-sidebar {
+    min-width: auto;
+  }
+}
+
+@media (max-width: 782px) {
+  .ls-short-link-display {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .ls-link-actions {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .ls-modal {
+    width: 95%;
+    margin: 20px;
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  .ls-notice {
+    right: 10px;
+    left: 10px;
+    max-width: none;
+  }
+
+  .ls-prefix-input-container {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .ls-domain-preview,
+  #ls_current_prefix,
+  .ls-slug-preview {
+    border-radius: 0 !important;
+    border-left: 1px solid #ddd !important;
+    border-right: 1px solid #ddd !important;
+  }
+
+  .ls-domain-preview {
+    border-top: 1px solid #ddd !important;
+    border-bottom: none !important;
+  }
+
+  .ls-slug-preview {
+    border-bottom: 1px solid #ddd !important;
+    border-top: none !important;
+  }
+}
+
+/* ==========================================================================
+   Accesibilidad
+   ========================================================================== */
+
+.ls-modal:focus {
+  outline: none;
+}
+
+.ls-modal-close:focus,
+.button:focus {
+  outline: 2px solid #007cba;
+  outline-offset: 2px;
+}
+
+.ls-option input[type="radio"]:focus + label {
+  outline: 2px solid #007cba;
+  outline-offset: 2px;
+}
+
+/* Mejorar contraste para usuarios con baja visión */
+@media (prefers-contrast: high) {
+  .ls-short-link-display code {
+    border-color: #333;
+    background: #f0f0f0;
+  }
+
+  .ls-validation-message.error {
+    background: #ffebee;
+    border-color: #d32f2f;
+  }
+
+  .ls-validation-message.success {
+    background: #e8f5e8;
+    border-color: #2e7d32;
+  }
+}
+
+/* Reducir movimiento para usuarios sensibles */
+@media (prefers-reduced-motion: reduce) {
+  .ls-modal-overlay,
+  .ls-notice,
+  .ls-alias-item,
+  .button.ls-copied {
+    transition: none !important;
+    animation: none !important;
+  }
+}
+
+/* JCC */
+.button-link-delete {
+  display: inline-block;
+  text-decoration: none;
+  font-size: 13px;
+  line-height: 2.15384615;
+  min-height: 30px;
+  margin: 0;
+  padding: 0 10px;
+  cursor: pointer;
+  border-width: 1px;
+  border-style: solid;
+  -webkit-appearance: none;
+  border-radius: 3px;
+  white-space: nowrap;
+  box-sizing: border-box;
+}
+
+body.post-type-ls_link #the-list th,
+body.post-type-ls_link #the-list td {
+  vertical-align: middle;
+}
+
+/* ==========================================================================
+   Ocultar acciones problemáticas y elementos no deseados en listado de ls_link
+   ========================================================================== */
+
+/* Ocultar TODAS las acciones de fila - ya no queremos hover actions */
+body.post-type-ls_link .row-actions {
+  display: none !important;
+}
+
+/* Ocultar completamente los Bulk Actions */
+body.post-type-ls_link .bulkactions,
+body.post-type-ls_link .tablenav-pages {
+  display: none !important;
+}
+
+/* Ocultar el checkbox de selección masiva ya que no hay bulk actions */
+body.post-type-ls_link .check-column,
+body.post-type-ls_link .column-cb {
+  display: none !important;
+}
+
+/* Ajustar el ancho de las columnas sin el checkbox */
+body.post-type-ls_link .wp-list-table thead th:first-child,
+body.post-type-ls_link .wp-list-table tbody td:first-child {
+  padding-left: 20px;
+}
+
+/* Asegurar que no aparezca Quick Edit en ninguna condición */
+body.post-type-ls_link .editinline {
+  display: none !important;
+}
+
+/* Estilos para la nueva columna de acciones */
+body.post-type-ls_link .ls-actions-column {
+  display: flex !important;
+  gap: 5px !important;
+  align-items: center !important;
+  flex-wrap: wrap !important;
+}
+
+body.post-type-ls_link .ls-actions-column .button {
+  /* font-size: 11px !important; */
+  /* padding: 4px 8px !important; */
+  /* line-height: 1.2 !important; */
+  /* height: auto !important;
+  min-height: auto !important; */
+}
+
+/* Botón Editar destacado */
+body.post-type-ls_link .ls-actions-column .button:first-child {
+  background: #2271b1 !important;
+  border-color: #2271b1 !important;
+  color: white !important;
+  font-size: 13px;
+  line-height: 2.15384615;
+  min-height: 30px;
+}
+
+body.post-type-ls_link .ls-actions-column .button:first-child:hover {
+  background: #135e96 !important;
+  border-color: #135e96 !important;
+}
+
+/* Mejorar espaciado de la tabla sin bulk actions */
+body.post-type-ls_link .wp-list-table {
+  margin-top: 10px;
+}
+
+body.post-type-ls_link .tablenav.top {
+  height: auto !important;
+  min-height: 0 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+/* Ocultar elementos de navegación superior innecesarios */
+body.post-type-ls_link .tablenav-pages,
+body.post-type-ls_link .view-switch,
+body.post-type-ls_link .displaying-num {
+  display: none !important;
+}
+
+/* JCC ocultar "bulk actions"*/
+body.post-type-ls_link #filter-by-date {
+  display: none !important;
+}
+body.post-type-ls_link #filter-by-date + #post-query-submit {
+  display: none !important;
+}
+body.post-type-ls_link #posts-filter > .tablenav {
+  display: none !important;
+}
+
+/* JCC ocultar boton "Copiar" en la lista*/
+body.post-type-ls_link #the-list .column-short_link .ls-link-actions {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+  height: 0 !important;
+  width: 0 !important;
+}
+
+body.post-type-ls_link td.column-original_url {
+  overflow: hidden;
+}
+
+/* Estilos para el botón "Copiar" */
+.ls_link__btn {
+  padding: 0.5rem !important;
+  border-radius: 9999px !important;
+  width: 38px;
+  height: 38px;
+  min-height: auto !important;
+  min-width: auto !important;
+  background: transparent !important;
+  box-sizing: border-box;
+  border: none !important;
+}
+.ls_link__btn:hover {
+  background: rgb(0 0 0 / 0.1) !important;
+}
+.ls_link__btn img {
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  /* min-width: 23px;
+  min-height: 23px; */
+}
