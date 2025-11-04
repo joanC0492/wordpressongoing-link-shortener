@@ -1,6 +1,6 @@
-Plugin: Fulltimeforce Link Shortener
+Plugin: Wordpressongoing Link Shortener
 
-**flujo actualizado** del plugin **Fulltimeforce Link Shortener**
+**flujo actualizado** del plugin **Wordpressongoing Link Shortener**
 
 # ✅ Flujo funcional (UX) definitivo
 
