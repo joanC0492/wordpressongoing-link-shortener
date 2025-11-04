@@ -9,6 +9,7 @@ if (!defined('ABSPATH')) {
   exit;
 }
 
+define('HIDDEN', true);
 class LS_Settings
 {
 
@@ -20,7 +21,7 @@ class LS_Settings
     add_action('admin_menu', array($this, 'add_admin_menu'));
     add_action('admin_init', array($this, 'init_settings'));
     add_action('admin_enqueue_scripts', array($this, 'enqueue_scripts'));
-    
+
     // Arreglar el menú activo para páginas de edición de ls_link
     add_filter('parent_file', array($this, 'fix_menu_highlight'));
     add_filter('submenu_file', array($this, 'fix_submenu_highlight'));
@@ -131,7 +132,7 @@ class LS_Settings
 
     ?>
     <div class="wrap">
-      <h1><?php echo esc_html__( 'Link Shortener Settings', 'fulltimeforce-link-shortener' ); ?></h1>
+      <h1><?php echo esc_html__('Link Shortener Settings', 'fulltimeforce-link-shortener'); ?></h1>
 
       <?php settings_errors(); ?>
 
@@ -144,55 +145,65 @@ class LS_Settings
             ?>
 
             <div class="ls-prefix-preview">
-              <h4><?php echo esc_html__( 'Link preview:', 'fulltimeforce-link-shortener' ); ?></h4>
+              <h4><?php echo esc_html__('Link preview:', 'fulltimeforce-link-shortener'); ?></h4>
               <code id="ls-preview-url"><?php echo esc_html(home_url() . $current_prefix . 'example'); ?></code>
             </div>
 
-            <?php submit_button( __( 'Save Settings', 'fulltimeforce-link-shortener' ) ); ?>
+            <?php submit_button(__('Save Settings', 'fulltimeforce-link-shortener')); ?>
           </form>
 
-          <?php if (count($prefix_history) > 1): ?>
-            <div class="ls-prefix-history">
-              <h3><?php echo esc_html__( 'Prefix History', 'fulltimeforce-link-shortener' ); ?></h3>
-              <p class="description">
-                <?php echo esc_html__( 'All previously used prefixes remain active to preserve existing links. New links will use the current prefix.', 'fulltimeforce-link-shortener' ); ?>
-              </p>
-              <ul class="ls-prefix-list">
-                <?php foreach ($prefix_history as $prefix): ?>
-                  <li>
-                    <code><?php echo esc_html($prefix); ?></code>
-                    <?php if ($prefix === $current_prefix): ?>
-                      <span class="ls-current-badge"><?php echo esc_html__( 'Current', 'fulltimeforce-link-shortener' ); ?></span>
-                    <?php endif; ?>
-                  </li>
-                <?php endforeach; ?>
-              </ul>
-            </div>
+          <?php if (HIDDEN != true): ?>
+            <?php if (count($prefix_history) > 1): ?>
+              <div class="ls-prefix-history">
+                <h3><?php echo esc_html__('Prefix History', 'fulltimeforce-link-shortener'); ?></h3>
+                <p class="description">
+                  <?php echo esc_html__('All previously used prefixes remain active to preserve existing links. New links will use the current prefix.', 'fulltimeforce-link-shortener'); ?>
+                </p>
+                <ul class="ls-prefix-list">
+                  <?php foreach ($prefix_history as $prefix): ?>
+                    <li>
+                      <code><?php echo esc_html($prefix); ?></code>
+                      <?php if ($prefix === $current_prefix): ?>
+                        <span class="ls-current-badge"><?php echo esc_html__('Current', 'fulltimeforce-link-shortener'); ?></span>
+                      <?php endif; ?>
+                    </li>
+                  <?php endforeach; ?>
+                </ul>
+              </div>
+            <?php endif; ?>
           <?php endif; ?>
         </div>
 
-        <div class="ls-settings-sidebar">
-          <div class="ls-stats-widget">
-            <h3><?php echo esc_html__( 'Statistics', 'fulltimeforce-link-shortener' ); ?></h3>
-            <div class="ls-stat-item">
-              <span class="ls-stat-number"><?php echo number_format($stats['total_links']); ?></span>
-              <span class="ls-stat-label"><?php echo esc_html__( 'Links created', 'fulltimeforce-link-shortener' ); ?></span>
+        <?php if (HIDDEN != true): ?>
+          <div class="ls-settings-sidebar">
+            <div class="ls-stats-widget">
+              <h3><?php echo esc_html__('Statistics', 'fulltimeforce-link-shortener'); ?></h3>
+              <div class="ls-stat-item">
+                <span class="ls-stat-number"><?php echo number_format($stats['total_links']); ?></span>
+                <span class="ls-stat-label"><?php echo esc_html__('Links created', 'fulltimeforce-link-shortener'); ?></span>
+              </div>
+              <div class="ls-stat-item">
+                <span class="ls-stat-number"><?php echo count($prefix_history); ?></span>
+                <span class="ls-stat-label"><?php echo esc_html__('Prefixes used', 'fulltimeforce-link-shortener'); ?></span>
+              </div>
             </div>
-            <div class="ls-stat-item">
-              <span class="ls-stat-number"><?php echo count($prefix_history); ?></span>
-              <span class="ls-stat-label"><?php echo esc_html__( 'Prefixes used', 'fulltimeforce-link-shortener' ); ?></span>
-            </div>
-          </div>
 
-          <div class="ls-help-widget">
-            <h3><?php echo esc_html__( 'Help', 'fulltimeforce-link-shortener' ); ?></h3>
-            <ul>
-              <li><strong><?php echo esc_html__( 'Prefix:', 'fulltimeforce-link-shortener' ); ?></strong> <?php echo esc_html__( 'Only enter the prefix without slashes (e.g., l, short, go)', 'fulltimeforce-link-shortener' ); ?></li>
-              <li><strong><?php echo esc_html__( 'Changes:', 'fulltimeforce-link-shortener' ); ?></strong> <?php echo esc_html__( 'Existing links will keep their original prefix', 'fulltimeforce-link-shortener' ); ?></li>
-              <li><strong><?php echo esc_html__( 'Example:', 'fulltimeforce-link-shortener' ); ?></strong> <?php echo esc_html__( 'With prefix "l" the link will be domain.com/l/slug', 'fulltimeforce-link-shortener' ); ?></li>
-            </ul>
+            <div class="ls-help-widget">
+              <h3><?php echo esc_html__('Help', 'fulltimeforce-link-shortener'); ?></h3>
+              <ul>
+                <li><strong><?php echo esc_html__('Prefix:', 'fulltimeforce-link-shortener'); ?></strong>
+                  <?php echo esc_html__('Only enter the prefix without slashes (e.g., l, short, go)', 'fulltimeforce-link-shortener'); ?>
+                </li>
+                <li><strong><?php echo esc_html__('Changes:', 'fulltimeforce-link-shortener'); ?></strong>
+                  <?php echo esc_html__('Existing links will keep their original prefix', 'fulltimeforce-link-shortener'); ?>
+                </li>
+                <li><strong><?php echo esc_html__('Example:', 'fulltimeforce-link-shortener'); ?></strong>
+                  <?php echo esc_html__('With prefix "l" the link will be domain.com/l/slug', 'fulltimeforce-link-shortener'); ?>
+                </li>
+              </ul>
+            </div>
           </div>
-        </div>
+        <?php endif; ?>
       </div>
     </div>
 
@@ -319,7 +330,7 @@ class LS_Settings
    */
   public function general_section_callback()
   {
-    echo '<p>' . esc_html__( 'Configure the prefix used for new short links.', 'fulltimeforce-link-shortener' ) . '</p>';
+    echo '<p>' . esc_html__('Configure the prefix used for new short links.', 'fulltimeforce-link-shortener') . '</p>';
   }
 
   /**
@@ -336,13 +347,12 @@ class LS_Settings
     <div class="ls-prefix-input-container">
       <span class="ls-domain-preview"><?php echo esc_html(rtrim($home_url, '/')); ?>/</span>
       <input type="text" id="ls_current_prefix" name="ls_current_prefix" value="<?php echo esc_attr($display_prefix); ?>"
-        class="regular-text" placeholder="l" pattern="^[a-zA-Z0-9\-_]+$" 
-        onkeypress="return lsValidateChar(event)" 
+        class="regular-text" placeholder="l" pattern="^[a-zA-Z0-9\-_]+$" onkeypress="return lsValidateChar(event)"
         oninput="lsValidateInput(this)" />
       <span class="ls-slug-preview">/slug</span>
     </div>
     <p class="description">
-      <?php echo esc_html__( 'Only enter the prefix (e.g., l, short, go). Only letters, numbers, dashes (-) and underscores (_) are allowed.', 'fulltimeforce-link-shortener' ); ?>
+      <?php echo esc_html__('Only enter the prefix (e.g., l, short, go). Only letters, numbers, dashes (-) and underscores (_) are allowed.', 'fulltimeforce-link-shortener'); ?>
     </p>
     <div id="ls-prefix-validation" class="ls-validation-message"></div>
 
@@ -402,7 +412,7 @@ class LS_Settings
       function lsValidateChar(event) {
         const char = String.fromCharCode(event.which);
         const allowedPattern = /[a-zA-Z0-9\-_]/;
-        
+
         if (!allowedPattern.test(char)) {
           event.preventDefault();
           return false;
@@ -412,15 +422,15 @@ class LS_Settings
 
       function lsValidateInput(input) {
         const value = input.value;
-        
+
         const S = (typeof lsSettings !== 'undefined' && lsSettings.strings) ? lsSettings.strings : {};
-        
+
         // Limpiar caracteres no válidos que puedan haber sido pegados
         const cleanValue = value.replace(/[^a-zA-Z0-9\-_]/g, '');
         if (cleanValue !== value) {
           input.value = cleanValue;
         }
-        
+
         // Validar longitud y contenido
         if (cleanValue.length === 0) {
           validationDiv.innerHTML = '';
@@ -438,7 +448,7 @@ class LS_Settings
           validationDiv.innerHTML = (S.prefixValid || 'Valid prefix');
           validationDiv.className = 'ls-validation-message success';
         }
-        
+
         // La actualización de vista previa se maneja en admin.js
       }
     </script>
@@ -567,10 +577,10 @@ class LS_Settings
       'ajaxUrl' => admin_url('admin-ajax.php'),
       'nonce' => wp_create_nonce('ls_settings_nonce'),
       'strings' => array(
-        'prefixTooShort' => __( 'Prefix must be at least 1 character', 'fulltimeforce-link-shortener' ),
-        'prefixTooLong'  => __( 'Prefix cannot be more than 20 characters', 'fulltimeforce-link-shortener' ),
-        'prefixAllowedChars' => __( 'Only letters, numbers, dashes (-) and underscores (_) are allowed', 'fulltimeforce-link-shortener' ),
-        'prefixValid' => __( 'Valid prefix', 'fulltimeforce-link-shortener' ),
+        'prefixTooShort' => __('Prefix must be at least 1 character', 'fulltimeforce-link-shortener'),
+        'prefixTooLong' => __('Prefix cannot be more than 20 characters', 'fulltimeforce-link-shortener'),
+        'prefixAllowedChars' => __('Only letters, numbers, dashes (-) and underscores (_) are allowed', 'fulltimeforce-link-shortener'),
+        'prefixValid' => __('Valid prefix', 'fulltimeforce-link-shortener'),
       ),
     ));
   }
@@ -581,16 +591,16 @@ class LS_Settings
   public function fix_menu_highlight($parent_file)
   {
     global $current_screen;
-    
+
     if (!$current_screen) {
       return $parent_file;
     }
-    
+
     // Si estamos en cualquier página relacionada con ls_link
     if ($current_screen->post_type === 'ls_link') {
       return 'link-shortener';
     }
-    
+
     return $parent_file;
   }
 
@@ -600,26 +610,26 @@ class LS_Settings
   public function fix_submenu_highlight($submenu_file)
   {
     global $current_screen;
-    
+
     if (!$current_screen) {
       return $submenu_file;
     }
-    
+
     // Para la página de listado de enlaces
     if ($current_screen->id === 'edit-ls_link') {
       return 'edit.php?post_type=ls_link';
     }
-    
+
     // Para la página de crear nuevo enlace
     if ($current_screen->id === 'ls_link' && $current_screen->action === 'add') {
       return 'post-new.php?post_type=ls_link';
     }
-    
+
     // Para la página de editar enlace individual
     if ($current_screen->id === 'ls_link' && $current_screen->action !== 'add') {
       return 'edit.php?post_type=ls_link';
     }
-    
+
     return $submenu_file;
   }
 }
