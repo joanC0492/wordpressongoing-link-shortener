@@ -1,8 +1,6 @@
 Plugin: Wordpressongoing Link Shortener
 
-**flujo actualizado** del plugin **Wordpressongoing Link Shortener**
-
-# ✅ Flujo funcional (UX) definitivo
+# ✅ Flujo funcional (UX)
 
 ## Menú principal
 
