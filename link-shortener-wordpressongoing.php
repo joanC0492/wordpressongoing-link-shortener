@@ -17,7 +17,7 @@ if (!defined('ABSPATH')) {
 }
 
 /**
- * Clase principal del plugin Fulltimeforce Link Shortener
+ * Clase principal del plugin Link Shortener by WP Ongoing
  */
 class Fulltimeforce_Link_Shortener
 {
