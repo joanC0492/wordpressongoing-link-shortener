@@ -152,19 +152,8 @@ class Fulltimeforce_Link_Shortener
       );
     }
 
-    // Fallback a load_plugin_textdomain
-    if (!$loaded) {
-      load_plugin_textdomain(
-        'link-shortener-wordpressongoing',
-        false,
-        dirname(plugin_basename(__FILE__)) . '/languages'
-      );
-    }
-
-    // Log para debug
-    if (defined('WP_DEBUG') && WP_DEBUG) {
-      error_log("LS i18n: Locale: $locale, Loaded: " . ($loaded ? 'yes' : 'no'));
-    }
+    // WordPress 6.7+ carga automáticamente las traducciones desde languages/
+    // No es necesario usar load_plugin_textdomain()
   }
 
   /**
@@ -350,8 +339,7 @@ class Fulltimeforce_Link_Shortener
     $version = get_option('ls_rewrite_version', '0');
 
     // Forzar flush en desarrollo
-    if (version_compare($version, self::VERSION, '<') || defined('WP_DEBUG') && WP_DEBUG) {
-      error_log('LS Debug: Flushing rewrite rules - version check o debug mode');
+    if (version_compare($version, self::VERSION, '<') || (defined('WP_DEBUG') && WP_DEBUG)) {
       flush_rewrite_rules();
       update_option('ls_rewrite_version', self::VERSION);
     }
@@ -387,9 +375,6 @@ class Fulltimeforce_Link_Shortener
 
     // Marcar que necesitamos flush de reglas
     update_option('ls_rewrite_version', self::VERSION);
-
-    // Log de activación
-    error_log('Fulltimeforce Link Shortener activado - Versión ' . self::VERSION);
   }
 
   /**
@@ -402,9 +387,6 @@ class Fulltimeforce_Link_Shortener
 
     // Remover capabilities (opcional, comentado para preservar datos)
     // $this->remove_capabilities();
-
-    // Log de desactivación
-    error_log('Fulltimeforce Link Shortener desactivado');
   }
 
   /**
@@ -599,7 +581,4 @@ function ls_uninstall_plugin()
 
   // Flush reglas de reescritura
   flush_rewrite_rules();
-
-  // Log de desinstalación
-  error_log('Fulltimeforce Link Shortener desinstalado completamente');
 }

@@ -37,7 +37,6 @@ class LS_Rewrite
       $prefix_clean = trim($prefix, '/');
 
       // Debug log
-      error_log("LS Debug: Registrando regla para prefijo: {$prefix_clean}");
 
       // Regla: /prefix/slug/ -> index.php?ls_slug=slug&ls_prefix=prefix
       add_rewrite_rule(
@@ -50,7 +49,6 @@ class LS_Rewrite
     // Debug: log todas las reglas registradas
     add_action('wp_loaded', function () {
       global $wp_rewrite;
-      error_log("LS Debug: Reglas de reescritura activas: " . print_r($wp_rewrite->rules, true));
     });
   }
 
@@ -72,24 +70,19 @@ class LS_Rewrite
     // Debug: log la URL completa
     // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Sanitized with esc_url_raw() for logging
     $request_uri = isset($_SERVER['REQUEST_URI']) ? esc_url_raw(wp_unslash($_SERVER['REQUEST_URI'])) : '';
-    error_log("LS Debug: REQUEST_URI = {$request_uri}");
-    error_log("LS Debug: Query vars recibidas: " . print_r($wp->query_vars, true));
 
     // Solo procesar si tenemos las query vars necesarias
     if (!isset($wp->query_vars['ls_slug']) || !isset($wp->query_vars['ls_prefix'])) {
-      error_log("LS Debug: No se encontraron query vars ls_slug o ls_prefix");
       return;
     }
 
     $slug = sanitize_text_field($wp->query_vars['ls_slug']);
     $prefix = sanitize_text_field($wp->query_vars['ls_prefix']);
 
-    error_log("LS Debug: Procesando slug='{$slug}', prefix='{$prefix}'");
 
     // Verificar que el prefijo esté en el historial
     $prefix_history = get_option('ls_prefix_history', array('/l/'));
     if (!in_array($prefix, $prefix_history)) {
-      error_log("LS Debug: Prefijo '{$prefix}' no está en el historial: " . print_r($prefix_history, true));
       return;
     }
 
@@ -97,11 +90,9 @@ class LS_Rewrite
     $link_data = $this->find_link_by_slug($slug);
 
     if (!$link_data) {
-      error_log("LS Debug: No se encontró enlace para slug: {$slug}");
       return;
     }
 
-    error_log("LS Debug: Enlace encontrado: " . print_r($link_data, true));
 
     // Realizar la redirección
     $this->perform_redirect($link_data['url'], $link_data['post_id'], $slug, $prefix);
@@ -115,9 +106,7 @@ class LS_Rewrite
     global $wp_query;
 
     // Debug: información del estado actual
-    error_log("LS Debug template_redirect: is_404=" . (is_404() ? 'true' : 'false'));
     // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Sanitized with esc_url_raw() for logging
-    error_log("LS Debug template_redirect: REQUEST_URI=" . (isset($_SERVER['REQUEST_URI']) ? esc_url_raw(wp_unslash($_SERVER['REQUEST_URI'])) : ''));
 
     // Intentar detectar si es un enlace corto manualmente
     // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Sanitized with esc_url_raw()
@@ -142,7 +131,6 @@ class LS_Rewrite
         $slug = trim($slug, '/');
 
         if (!empty($slug)) {
-          error_log("LS Debug template_redirect: Detectado slug='{$slug}', prefix='{$prefix}'");
 
           $link_data = $this->find_link_by_slug($slug);
           if ($link_data) {
@@ -156,7 +144,6 @@ class LS_Rewrite
     }
 
     if ($found_match) {
-      error_log("LS Debug template_redirect: Se detectó patrón de enlace corto pero no se encontró en BD");
     }
 
     // Método original como fallback
@@ -196,7 +183,6 @@ class LS_Rewrite
   {
     global $wpdb;
 
-    error_log("LS Debug: Buscando slug '{$slug}' en la base de datos");
 
     // Buscar por slug principal
     // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Required for real-time link redirection
@@ -208,11 +194,9 @@ class LS_Rewrite
       $slug
     ));
 
-    error_log("LS Debug: Consulta principal - post_id encontrado: " . ($post_id ? $post_id : 'null'));
 
     if ($post_id) {
       $original_url = get_post_meta($post_id, '_ls_original_url', true);
-      error_log("LS Debug: URL original encontrada: " . ($original_url ? $original_url : 'null'));
 
       if ($original_url) {
         return array(
@@ -224,6 +208,7 @@ class LS_Rewrite
     }
 
     // Buscar en aliases
+    // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Alias search requires direct query with LIKE pattern
     $alias_posts = $wpdb->get_results($wpdb->prepare(
       "SELECT post_id, meta_value FROM {$wpdb->postmeta} 
              WHERE meta_key = '_ls_aliases'
@@ -231,14 +216,12 @@ class LS_Rewrite
       '%"' . $wpdb->esc_like($slug) . '"%'
     ));
 
-    error_log("LS Debug: Búsqueda en aliases - resultados: " . count($alias_posts));
 
     foreach ($alias_posts as $alias_post) {
       $aliases = maybe_unserialize($alias_post->meta_value);
       if (is_array($aliases) && in_array($slug, $aliases)) {
         $original_url = get_post_meta($alias_post->post_id, '_ls_original_url', true);
         if ($original_url) {
-          error_log("LS Debug: URL encontrada en alias: {$original_url}");
           return array(
             'post_id' => $alias_post->post_id,
             'url' => $original_url,
@@ -248,7 +231,6 @@ class LS_Rewrite
       }
     }
 
-    error_log("LS Debug: No se encontró ningún enlace para el slug '{$slug}'");
     return false;
   }
 
@@ -259,7 +241,6 @@ class LS_Rewrite
   {
     // Verificar que la URL sea válida
     if (!filter_var($url, FILTER_VALIDATE_URL)) {
-      error_log("Link Shortener: URL inválida para redirección: {$url}");
       wp_die('Enlace no válido', 'Error 400', array('response' => 400));
       return;
     }

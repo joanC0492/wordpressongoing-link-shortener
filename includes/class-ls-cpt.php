@@ -229,10 +229,11 @@ class LS_CPT
    */
   private function get_link_by_url($url)
   {
-    // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key, WordPress.DB.SlowDBQuery.slow_db_query_meta_value -- Necessary to find existing link by URL
     $posts = get_posts(array(
       'post_type' => 'ls_link',
+      // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key -- Necessary to find existing link by URL
       'meta_key' => '_ls_original_url',
+      // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_value -- Necessary to find existing link by URL
       'meta_value' => $url,
       'posts_per_page' => 1,
       'post_status' => 'publish',

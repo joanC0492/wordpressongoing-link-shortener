@@ -196,6 +196,7 @@ class Link_Shortener_Post_Type
     // Verificar nonce
     if (
       !isset($_POST['link_shortener_meta_box_nonce']) ||
+      // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Nonce verification doesn't require sanitization
       !wp_verify_nonce(wp_unslash($_POST['link_shortener_meta_box_nonce']), 'link_shortener_meta_box')
     ) {
       return;
@@ -242,9 +243,9 @@ class Link_Shortener_Post_Type
    */
   private function short_code_exists($short_code, $exclude_id = 0)
   {
-    // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- Necessary for short code uniqueness validation
     $query = new WP_Query(array(
       'post_type' => self::POST_TYPE,
+      // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- Necessary for short code uniqueness validation
       'meta_query' => array(
         array(
           'key' => '_short_code',
@@ -252,6 +253,7 @@ class Link_Shortener_Post_Type
           'compare' => '='
         )
       ),
+      // phpcs:ignore WordPressVIPMinimum.Performance.WPQueryParams.PostNotIn_post__not_in -- Required to exclude current post during validation
       'post__not_in' => array($exclude_id),
       'posts_per_page' => 1
     ));

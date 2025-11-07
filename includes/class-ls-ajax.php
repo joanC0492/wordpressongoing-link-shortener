@@ -558,10 +558,11 @@ class LS_AJAX
 
   private function get_link_by_url($url)
   {
-    // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key, WordPress.DB.SlowDBQuery.slow_db_query_meta_value -- Necessary to find existing link by URL
     $posts = get_posts(array(
       'post_type' => 'ls_link',
+      // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key -- Necessary to find existing link by URL
       'meta_key' => '_ls_original_url',
+      // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_value -- Necessary to find existing link by URL
       'meta_value' => $url,
       'posts_per_page' => 1,
       'post_status' => 'publish',
@@ -735,6 +736,7 @@ class LS_AJAX
     global $wpdb;
 
     // Buscar todos los enlaces existentes para esta URL
+    // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Complex join query required for tag management
     $existing_links = $wpdb->get_results($wpdb->prepare(
       "SELECT p.ID FROM {$wpdb->posts} p
        INNER JOIN {$wpdb->postmeta} pm ON p.ID = pm.post_id
