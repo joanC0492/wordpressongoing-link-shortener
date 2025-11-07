@@ -12,11 +12,14 @@ if (!defined('ABSPATH')) {
 }
 
 // Obtener los enlaces cortos
+// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Paginación segura solo lectura
 $paged = isset($_GET['paged']) ? absint($_GET['paged']) : 1;
 // Parámetros de búsqueda y filtro
-$search = isset($_GET['s']) ? sanitize_text_field($_GET['s']) : '';
+// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Búsqueda segura solo lectura
+$search = isset($_GET['s']) ? sanitize_text_field(wp_unslash($_GET['s'])) : '';
 // Filtro por categoría
-$category = isset($_GET['category']) ? sanitize_text_field($_GET['category']) : '';
+// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Filtro seguro solo lectura
+$category = isset($_GET['category']) ? sanitize_text_field(wp_unslash($_GET['category'])) : '';
 
 $args = array(
   'post_type' => 'short_link',
@@ -32,6 +35,7 @@ if (!empty($search)) {
 
 // Agregar filtro por categoría si existe
 if (!empty($category)) {
+  // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query -- User-requested filter for admin listing
   $args['tax_query'] = array(
     array(
       'taxonomy' => 'link_category',
@@ -57,8 +61,8 @@ $categories = get_terms(array(
 
 <div class="wrap">
   <h1>
-    <?= esc_html(get_admin_page_title()); ?>
-    <a href="<?= admin_url('admin.php?page=ff-link-shortener-add-new'); ?>" class="page-title-action">
+    <?php echo esc_html(get_admin_page_title()); ?>
+    <a href="<?php echo esc_url(admin_url('admin.php?page=ff-link-shortener-add-new')); ?>" class="page-title-action">
       Agregar nuevo
     </a>
   </h1>
@@ -66,18 +70,18 @@ $categories = get_terms(array(
   <!-- Filtros superiores -->
   <ul class="subsubsub">
     <li class="all">
-      <a href="<?= admin_url('admin.php?page=ff-link-shortener-all-links'); ?>" class="current">
-        Todos <span class="count">(<?php echo $active_links; ?>)</span>
+      <a href="<?php echo esc_url(admin_url('admin.php?page=ff-link-shortener-all-links')); ?>" class="current">
+        Todos <span class="count">(<?php echo absint($active_links); ?>)</span>
       </a> |
     </li>
     <li class="published">
-      <a href="<?= admin_url('admin.php?page=ff-link-shortener-all-links&status=active'); ?>">
-        Activos <span class="count">(<?php echo $active_links; ?>)</span>
+      <a href="<?php echo esc_url(admin_url('admin.php?page=ff-link-shortener-all-links&status=active')); ?>">
+        Activos <span class="count">(<?php echo absint($active_links); ?>)</span>
       </a> |
     </li>
     <li class="trash">
-      <a href="<?= admin_url('admin.php?page=ff-link-shortener-all-links&status=inactive'); ?>">
-        Inactivos <span class="count">(<?php echo $inactive_links; ?>)</span>
+      <a href="<?php echo esc_url(admin_url('admin.php?page=ff-link-shortener-all-links&status=inactive')); ?>">
+        Inactivos <span class="count">(<?php echo absint($inactive_links); ?>)</span>
       </a>
     </li>
   </ul>
@@ -120,7 +124,7 @@ $categories = get_terms(array(
       </div>
 
       <div class="tablenav-pages">
-        <span class="displaying-num"><?php echo $links_query->found_posts; ?> elementos</span>
+        <span class="displaying-num"><?php echo absint($links_query->found_posts); ?> elementos</span>
         <?php
         // Generar paginación
         $total_pages = $links_query->max_num_pages;
@@ -137,7 +141,7 @@ $categories = get_terms(array(
 
           if ($page_links) {
             echo '<span class="pagination-links">';
-            echo implode('', $page_links);
+            echo implode('', array_map('wp_kses_post', $page_links));
             echo '</span>';
           }
         endif;
@@ -155,7 +159,7 @@ $categories = get_terms(array(
             <input id="cb-select-all-1" type="checkbox">
           </td>
           <th scope="col" id="title" class="manage-column column-title column-primary sortable desc">
-            <a href="<?= admin_url('admin.php?page=ff-link-shortener-all-links&orderby=title&order=asc'); ?>">
+            <a href="<?php echo esc_url(admin_url('admin.php?page=ff-link-shortener-all-links&orderby=title&order=asc')); ?>">
               <span>URL Original</span>
               <span class="sorting-indicator"></span>
             </a>
@@ -163,7 +167,7 @@ $categories = get_terms(array(
           <th scope="col" id="short_url" class="manage-column column-short-url">Enlace Corto</th>
           <th scope="col" id="category" class="manage-column column-category">Categoría</th>
           <th scope="col" id="date" class="manage-column column-date sortable asc">
-            <a href="<?= admin_url('admin.php?page=ff-link-shortener-all-links&orderby=date&order=desc'); ?>">
+            <a href="<?php echo esc_url(admin_url('admin.php?page=ff-link-shortener-all-links&orderby=date&order=desc')); ?>">
               <span>Fecha</span>
               <span class="sorting-indicator"></span>
             </a>
@@ -184,17 +188,17 @@ $categories = get_terms(array(
             ?>
             <tr>
               <th scope="row" class="check-column">
-                <input type="checkbox" name="post[]" value="<?php echo $post_id; ?>">
+                <input type="checkbox" name="post[]" value="<?php echo absint($post_id); ?>">
               </th>
               <td class="title column-title has-row-actions column-primary" data-colname="URL Original">
                 <strong>
-                  <a href="<?php echo get_edit_post_link($post_id); ?>" class="row-title">
+                  <a href="<?php echo esc_url(get_edit_post_link($post_id)); ?>" class="row-title">
                     <?php echo esc_html($original_url ?: get_the_title()); ?>
                   </a>
                 </strong>
                 <div class="row-actions">
                   <span class="edit">
-                    <a href="<?php echo get_edit_post_link($post_id); ?>" aria-label="Editar enlace">Editar</a> |
+                    <a href="<?php echo esc_url(get_edit_post_link($post_id)); ?>" aria-label="Editar enlace">Editar</a> |
                   </span>
                   <span class="copy">
                     <a href="#" class="copy-link" data-url="<?php echo esc_attr($short_url); ?>"
@@ -204,7 +208,7 @@ $categories = get_terms(array(
                     <a href="<?php echo esc_url($short_url); ?>" target="_blank" aria-label="Probar enlace">Probar</a> |
                   </span>
                   <span class="trash">
-                    <a href="<?php echo get_delete_post_link($post_id); ?>" class="submitdelete"
+                    <a href="<?php echo esc_url(get_delete_post_link($post_id)); ?>" class="submitdelete"
                       aria-label="Mover a papelera">Papelera</a>
                   </span>
                 </div>
@@ -228,10 +232,10 @@ $categories = get_terms(array(
                 <?php endif; ?>
               </td>
               <td class="date column-date" data-colname="Fecha">
-                <?php echo get_the_date(); ?>
+                <?php echo esc_html(get_the_date()); ?>
               </td>
               <td class="actions column-actions" data-colname="Acciones">
-                <a href="<?php echo get_edit_post_link($post_id); ?>" class="button button-small">Editar</a>
+                <a href="<?php echo esc_url(get_edit_post_link($post_id)); ?>" class="button button-small">Editar</a>
                 <a href="#" class="button button-small copy-link" data-url="<?php echo esc_attr($short_url); ?>">Copiar</a>
                 <a href="<?php echo esc_url($short_url); ?>" target="_blank" class="button button-small">Probar</a>
               </td>
@@ -245,7 +249,7 @@ $categories = get_terms(array(
                 <p style="font-size: 18px; margin-bottom: 15px;">No se han creado enlaces cortos aún.</p>
                 <p style="margin-bottom: 20px; color: #666;">Comienza creando tu primer enlace corto para comenzar a
                   trackear tus URLs.</p>
-                <a href="<?= admin_url('admin.php?page=ff-link-shortener-add-new'); ?>"
+                <a href="<?php echo esc_url(admin_url('admin.php?page=ff-link-shortener-add-new')); ?>"
                   class="button button-primary button-large">
                   <span class="dashicons dashicons-plus-alt" style="vertical-align: middle; margin-right: 5px;"></span>
                   Crear tu primer enlace corto
@@ -262,7 +266,7 @@ $categories = get_terms(array(
             <input id="cb-select-all-2" type="checkbox">
           </td>
           <th scope="col" class="manage-column column-title column-primary sortable desc">
-            <a href="<?= admin_url('admin.php?page=ff-link-shortener-all-links&orderby=title&order=asc'); ?>">
+            <a href="<?php echo esc_url(admin_url('admin.php?page=ff-link-shortener-all-links&orderby=title&order=asc')); ?>">
               <span>URL Original</span>
               <span class="sorting-indicator"></span>
             </a>
@@ -270,7 +274,7 @@ $categories = get_terms(array(
           <th scope="col" class="manage-column column-short-url">Enlace Corto</th>
           <th scope="col" class="manage-column column-category">Categoría</th>
           <th scope="col" class="manage-column column-date sortable asc">
-            <a href="<?= admin_url('admin.php?page=ff-link-shortener-all-links&orderby=date&order=desc'); ?>">
+            <a href="<?php echo esc_url(admin_url('admin.php?page=ff-link-shortener-all-links&orderby=date&order=desc')); ?>">
               <span>Fecha</span>
               <span class="sorting-indicator"></span>
             </a>

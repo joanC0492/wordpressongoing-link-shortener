@@ -30,7 +30,7 @@ class LS_Metabox
   {
     add_meta_box(
       'ls_link_data',
-      __('Link Data', 'fulltimeforce-link-shortener'),
+      __('Link Data', 'link-shortener-wordpressongoing'),
       array($this, 'metabox_callback'),
       'ls_link',
       'normal',
@@ -61,19 +61,19 @@ class LS_Metabox
     <table class="form-table">
       <tr>
         <th scope="row">
-          <label for="ls_original_url"><?php echo esc_html__( 'Original URL', 'fulltimeforce-link-shortener' ); ?> <span class="required">*</span></label>
+          <label for="ls_original_url"><?php echo esc_html__( 'Original URL', 'link-shortener-wordpressongoing' ); ?> <span class="required">*</span></label>
         </th>
         <td>
           <input type="url" id="ls_original_url" name="ls_original_url" value="<?php echo esc_attr($original_url); ?>"
             class="regular-text" placeholder="https://example.com/long-page" pattern="https?://.*"
-            title="<?php echo esc_attr__( 'Must start with http:// or https://', 'fulltimeforce-link-shortener' ); ?>" required />
-          <p class="description"><?php echo esc_html__( 'Full URL you want to shorten. Must include http:// or https://', 'fulltimeforce-link-shortener' ); ?></p>
+            title="<?php echo esc_attr__( 'Must start with http:// or https://', 'link-shortener-wordpressongoing' ); ?>" required />
+          <p class="description"><?php echo esc_html__( 'Full URL you want to shorten. Must include http:// or https://', 'link-shortener-wordpressongoing' ); ?></p>
           <div id="ls_url_validation" class="ls-validation-message"></div>
         </td>
       </tr>
       <tr>
         <th scope="row">
-          <label for="ls_slug"><?php echo esc_html__( 'Custom slug', 'fulltimeforce-link-shortener' ); ?></label>
+          <label for="ls_slug"><?php echo esc_html__( 'Custom slug', 'link-shortener-wordpressongoing' ); ?></label>
         </th>
         <td>
           <div class="ls-slug-preview">
@@ -81,33 +81,33 @@ class LS_Metabox
             <input type="text" id="ls_slug" name="ls_slug" value="<?php echo esc_attr($slug); ?>" class="regular-text"
               placeholder="my-link" pattern="[a-zA-Z0-9\-_]+" />
           </div>
-          <p class="description"><?php echo esc_html__( 'Optional. If left empty, one will be generated automatically. Only letters, numbers, dashes and underscores are allowed.', 'fulltimeforce-link-shortener' ); ?></p>
+          <p class="description"><?php echo esc_html__( 'Optional. If left empty, one will be generated automatically. Only letters, numbers, dashes and underscores are allowed.', 'link-shortener-wordpressongoing' ); ?></p>
           <div id="ls_slug_validation" class="ls-validation-message"></div>
           <?php if ($slug): ?>
             <p class="ls-slug-info">
-              <strong><?php echo esc_html__( 'Full link:', 'fulltimeforce-link-shortener' ); ?></strong>
+              <strong><?php echo esc_html__( 'Full link:', 'link-shortener-wordpressongoing' ); ?></strong>
               <code id="ls_full_url"><?php echo esc_html(home_url($prefix_used . $slug)); ?></code>
               <button type="button" class="button-secondary ls-copy-link"
-                data-url="<?php echo esc_attr(home_url($prefix_used . $slug)); ?>"><?php echo esc_html__( 'Copy', 'fulltimeforce-link-shortener' ); ?></button>
+                data-url="<?php echo esc_attr(home_url($prefix_used . $slug)); ?>"><?php echo esc_html__( 'Copy', 'link-shortener-wordpressongoing' ); ?></button>
             </p>
           <?php endif; ?>
         </td>
       </tr>
       <tr>
         <th scope="row">
-          <label for="ls_tag"><?php echo esc_html__( 'Tag', 'fulltimeforce-link-shortener' ); ?></label>
+          <label for="ls_tag"><?php echo esc_html__( 'Tag', 'link-shortener-wordpressongoing' ); ?></label>
         </th>
         <td>
           <input type="text" id="ls_tag" name="ls_tag" value="<?php echo esc_attr($tag); ?>" class="regular-text"
             placeholder="" maxlength="50" />
-          <p class="description"><?php echo esc_html__( 'Descriptive label to organize your links (maximum 50 characters)', 'fulltimeforce-link-shortener' ); ?></p>
+          <p class="description"><?php echo esc_html__( 'Descriptive label to organize your links (maximum 50 characters)', 'link-shortener-wordpressongoing' ); ?></p>
         </td>
       </tr>
     </table>
 
     <?php if ($post->post_status === 'auto-draft'): ?>
       <p class="ls-save-notice">
-        <strong><?php echo esc_html__( 'Note:', 'fulltimeforce-link-shortener' ); ?></strong> <?php echo esc_html__( 'The short link will be created when saving. If you do not specify a slug, one will be generated automatically.', 'fulltimeforce-link-shortener' ); ?>
+        <strong><?php echo esc_html__( 'Note:', 'link-shortener-wordpressongoing' ); ?></strong> <?php echo esc_html__( 'The short link will be created when saving. If you do not specify a slug, one will be generated automatically.', 'link-shortener-wordpressongoing' ); ?>
       </p>
     <?php endif; ?>
 
@@ -216,7 +216,8 @@ class LS_Metabox
   public function save_metabox($post_id)
   {
     // Verificaciones de seguridad
-    if (!isset($_POST['ls_link_nonce']) || !wp_verify_nonce($_POST['ls_link_nonce'], 'ls_save_link_data')) {
+    // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Nonce verification doesn't require sanitization
+    if (!isset($_POST['ls_link_nonce']) || !wp_verify_nonce(wp_unslash($_POST['ls_link_nonce']), 'ls_save_link_data')) {
       return;
     }
 
@@ -229,7 +230,7 @@ class LS_Metabox
     }
 
     // Validar y sanitizar URL original
-    $original_url = isset($_POST['ls_original_url']) ? esc_url_raw($_POST['ls_original_url']) : '';
+    $original_url = isset($_POST['ls_original_url']) ? esc_url_raw(wp_unslash($_POST['ls_original_url'])) : '';
 
     if (empty($original_url)) {
       add_action('admin_notices', function () {
@@ -247,7 +248,7 @@ class LS_Metabox
     }
 
     // Verificar que el dominio existe (validación adicional)
-    $parsed_url = parse_url($original_url);
+    $parsed_url = wp_parse_url($original_url);
     if (!isset($parsed_url['host']) || empty($parsed_url['host'])) {
       add_action('admin_notices', function () {
         echo '<div class="notice notice-error"><p>Error: La URL debe incluir un dominio válido.</p></div>';
@@ -272,7 +273,7 @@ class LS_Metabox
     }
 
     // Procesar slug
-    $slug = isset($_POST['ls_slug']) ? sanitize_title($_POST['ls_slug']) : '';
+    $slug = isset($_POST['ls_slug']) ? sanitize_title(wp_unslash($_POST['ls_slug'])) : '';
 
     // Si no hay slug, generar uno
     if (empty($slug)) {
@@ -296,7 +297,7 @@ class LS_Metabox
     }
 
     // Sanitizar tag
-    $tag = isset($_POST['ls_tag']) ? sanitize_text_field($_POST['ls_tag']) : '';
+    $tag = isset($_POST['ls_tag']) ? sanitize_text_field(wp_unslash($_POST['ls_tag'])) : '';
     if (strlen($tag) > 50) {
       $tag = substr($tag, 0, 50);
     }
@@ -311,7 +312,7 @@ class LS_Metabox
     update_post_meta($post_id, '_ls_prefix_used', $current_prefix);
 
     // Generar título automático
-    $parsed_url = parse_url($original_url);
+    $parsed_url = wp_parse_url($original_url);
     $host = isset($parsed_url['host']) ? $parsed_url['host'] : 'unknown';
     $auto_title = $slug . ' | ' . $host;
 
@@ -394,32 +395,34 @@ class LS_Metabox
   {
     global $wpdb;
 
-    $query = $wpdb->prepare(
-      "SELECT post_id FROM {$wpdb->postmeta} 
+    // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Required for real-time slug uniqueness validation
+    $result = $wpdb->get_var(
+      $wpdb->prepare(
+        "SELECT post_id FROM {$wpdb->postmeta} 
              WHERE meta_key = '_ls_slug' 
              AND meta_value = %s 
              AND post_id != %d",
-      $slug,
-      $exclude_post_id
+        $slug,
+        $exclude_post_id
+      )
     );
-
-    $result = $wpdb->get_var($query);
 
     if ($result) {
       return false;
     }
 
     // Verificar también en aliases
-    $alias_query = $wpdb->prepare(
-      "SELECT post_id FROM {$wpdb->postmeta} 
+    // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Required for real-time slug uniqueness validation
+    $alias_result = $wpdb->get_var(
+      $wpdb->prepare(
+        "SELECT post_id FROM {$wpdb->postmeta} 
              WHERE meta_key = '_ls_aliases' 
              AND meta_value LIKE %s 
              AND post_id != %d",
-      '%"' . $slug . '"%',
-      $exclude_post_id
+        '%' . $wpdb->esc_like('"' . $slug . '"') . '%',
+        $exclude_post_id
+      )
     );
-
-    $alias_result = $wpdb->get_var($alias_query);
 
     return !$alias_result;
   }

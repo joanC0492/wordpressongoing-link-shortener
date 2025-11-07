@@ -12,30 +12,36 @@ if (!defined('ABSPATH')) {
 }
 
 // Procesar el formulario si se envió
-if (isset($_POST['submit']) && wp_verify_nonce($_POST['link_shortener_nonce'], 'link_shortener_add_new')) {
-  $original_url = sanitize_url($_POST['original_url']);
-  $short_code = sanitize_text_field($_POST['short_code']);
-  $category = intval($_POST['category']);
-  $description = sanitize_textarea_field($_POST['description']);
+if (isset($_POST['submit']) && isset($_POST['link_shortener_nonce']) && wp_verify_nonce(wp_unslash($_POST['link_shortener_nonce']), 'link_shortener_add_new')) {
+  // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Sanitized with esc_url_raw() below
+  $original_url = isset($_POST['original_url']) ? esc_url_raw(wp_unslash($_POST['original_url'])) : '';
+  $short_code = isset($_POST['short_code']) ? sanitize_text_field(wp_unslash($_POST['short_code'])) : '';
+  $category = isset($_POST['category']) ? absint($_POST['category']) : 0;
+  $description = isset($_POST['description']) ? sanitize_textarea_field(wp_unslash($_POST['description'])) : '';
   
-  // Crear el post
-  $post_data = array(
-    'post_title' => $original_url,
-    'post_type' => 'short_link',
-    'post_status' => 'publish',
-    'post_content' => $description
-  );
+  // Validar que la URL original no esté vacía
+  if (empty($original_url)) {
+    $error_message = 'La URL original es requerida.';
+  } else {
+    // Crear el post
+    $post_data = array(
+      'post_title' => $original_url,
+      'post_type' => 'short_link',
+      'post_status' => 'publish',
+      'post_content' => $description
+    );
   
-  $post_id = wp_insert_post($post_data);
+    $post_id = wp_insert_post($post_data);
   
-  if ($post_id && !is_wp_error($post_id)) {
-    // Guardar metadatos
-    update_post_meta($post_id, '_original_url', $original_url);
-    update_post_meta($post_id, '_description', $description);
+    if ($post_id && !is_wp_error($post_id)) {
+      // Guardar metadatos
+      update_post_meta($post_id, '_original_url', $original_url);
+      update_post_meta($post_id, '_description', $description);
     
     // Generar o usar código corto personalizado
     if (!empty($short_code)) {
       // Verificar que no exista
+      // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- Necessary for uniqueness validation
       $existing = new WP_Query(array(
         'post_type' => 'short_link',
         'meta_query' => array(
@@ -59,7 +65,7 @@ if (isset($_POST['submit']) && wp_verify_nonce($_POST['link_shortener_nonce'], '
       do {
         $short_code = '';
         for ($i = 0; $i < 6; $i++) {
-          $short_code .= $characters[rand(0, strlen($characters) - 1)];
+          $short_code .= $characters[wp_rand(0, strlen($characters) - 1)];
         }
         $exists = new WP_Query(array(
           'post_type' => 'short_link',
@@ -83,8 +89,9 @@ if (isset($_POST['submit']) && wp_verify_nonce($_POST['link_shortener_nonce'], '
     
     $success_message = 'Enlace corto creado exitosamente. Código: ' . $short_code;
     $short_url = home_url('/go/' . $short_code);
-  } else {
-    $error_message = 'Error al crear el enlace corto. Por favor intenta nuevamente.';
+    } else {
+      $error_message = 'Error al crear el enlace corto. Por favor intenta nuevamente.';
+    }
   }
 }
 
@@ -96,7 +103,7 @@ $categories = get_terms(array(
 ?>
 
 <div class="wrap">
-  <h1><?= esc_html(get_admin_page_title()); ?></h1>
+  <h1><?php echo esc_html(get_admin_page_title()); ?></h1>
   
   <?php if (isset($success_message)) : ?>
     <div class="notice notice-success is-dismissible">

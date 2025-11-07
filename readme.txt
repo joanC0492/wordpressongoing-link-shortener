@@ -1,4 +1,4 @@
-=== Wordpressongoing Link Shortener ===
+=== Link Shortener by WP ongoing ===
 Contributors: joancochachi
 Donate link: https://wordpressongoing.com
 Tags: link shortener, short links, url shortener, redirect, marketing, analytics, wordpress shortener
@@ -13,7 +13,7 @@ Professional plugin to shorten links with advanced prefix management and full ad
 
 == Description ==
 
-**Wordpressongoing Link Shortener** is a complete and professional plugin that allows you to create and manage short links directly from your WordPress dashboard.
+**Link Shortener by WP ongoing** is a complete and professional plugin that allows you to create and manage short links directly from your WordPress dashboard.
 
 = Main Features =
 
@@ -59,7 +59,7 @@ The plugin is designed with usability and performance in mind, providing a profe
 = Automatic Installation =
 
 1. Go to your WordPress dashboard > Plugins > Add New  
-2. Search for "Wordpressongoing Link Shortener"  
+2. Search for "Link Shortener by WP ongoing"  
 3. Click "Install Now"  
 4. Activate the plugin  
 

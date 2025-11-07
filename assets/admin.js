@@ -87,7 +87,7 @@
       var $updateButton = $('#publish, #save-post');
       if ($updateButton.hasClass('ls-disabled')) {
         e.preventDefault();
-        showNotice("No se puede guardar: el slug ya está en uso. Por favor, elige otro slug.", "error");
+        showNotice(((lsAdmin && lsAdmin.strings) ? lsAdmin.strings.cannotSaveSlugInUse : 'Cannot save: the slug is already in use. Please choose another slug.'), "error");
         return false;
       }
     });
@@ -162,13 +162,13 @@
             copyToClipboardAuto(response.data.short_url);
           }
         } else {
-          showNotice("Error: " + response.data, "error");
-          $button.prop("disabled", false).text("Generar short link");
+          showNotice(((lsAdmin && lsAdmin.strings) ? (lsAdmin.strings.errorPrefix + ' ') : 'Error: ') + response.data, "error");
+          $button.prop("disabled", false).text(((lsAdmin && lsAdmin.strings) ? lsAdmin.strings.generateShortLink : 'Generate short link'));
         }
       },
       error: function () {
-        showNotice("Error de conexión", "error");
-        $button.prop("disabled", false).text("Generar short link");
+        showNotice(((lsAdmin && lsAdmin.strings) ? lsAdmin.strings.connectionError : 'Connection error'), "error");
+        $button.prop("disabled", false).text(((lsAdmin && lsAdmin.strings) ? lsAdmin.strings.generateShortLink : 'Generate short link'));
       },
     });
   }
@@ -254,7 +254,7 @@
       navigator.clipboard
         .writeText(url)
         .then(function () {
-          showNotice("Enlace generado y copiado al portapapeles: " + url, "success", 4000);
+          showNotice((((lsAdmin && lsAdmin.strings) ? (lsAdmin.strings.generatedAndCopiedPrefix + ' ') : 'Link generated and copied to clipboard: ') + url), "success", 4000);
         })
         .catch(function () {
           fallbackCopyToClipboardAuto(url);
@@ -279,9 +279,9 @@
 
     try {
       document.execCommand("copy");
-      showNotice("Enlace generado y copiado al portapapeles: " + url, "success", 4000);
+      showNotice((((lsAdmin && lsAdmin.strings) ? (lsAdmin.strings.generatedAndCopiedPrefix + ' ') : 'Link generated and copied to clipboard: ') + url), "success", 4000);
     } catch (err) {
-      showNotice("Enlace generado. No se pudo copiar automáticamente: " + url, "warning", 5000);
+      showNotice((((lsAdmin && lsAdmin.strings) ? (lsAdmin.strings.generatedCopyFailedPrefix + ' ') : 'Link generated. Could not copy automatically: ') + url), "warning", 5000);
     }
 
     document.body.removeChild(textArea);
@@ -298,7 +298,7 @@
     var originalUrl = $button.data("original-url");
 
     if (!linkId) {
-      showNotice("Error: ID de enlace requerido", "error");
+      showNotice(((lsAdmin && lsAdmin.strings) ? (lsAdmin.strings.errorPrefix + ' ' + lsAdmin.strings.linkIdRequired) : 'Error: Link ID required'), "error");
       return;
     }
 
@@ -309,42 +309,43 @@
    * Muestra el modal para rotar slug
    */
   function showRotateSlugModal(linkId, originalUrl) {
+    var strings = (lsAdmin && lsAdmin.strings) ? lsAdmin.strings : {};
     var modalHtml = `
             <div class="ls-modal-overlay" id="ls-rotate-modal">
                 <div class="ls-modal" role="dialog" aria-labelledby="ls-modal-title" aria-modal="true">
                     <div class="ls-modal-header">
-                        <h2 id="ls-modal-title">Rotar Slug</h2>
-                        <button type="button" class="ls-modal-close" aria-label="Cerrar modal">&times;</button>
+                        <h2 id="ls-modal-title">${strings.rotateModalTitle || 'Rotate Slug'}</h2>
+                        <button type="button" class="ls-modal-close" aria-label="${strings.closeModalAria || 'Close modal'}">&times;</button>
                     </div>
                     <div class="ls-modal-body">
-                        <p>Elige cómo quieres actualizar el slug de este enlace:</p>
+                        <p>${strings.rotateModalIntro || 'Choose how you want to update this link\'s slug:'}</p>
                         
                         <div class="ls-rotate-options">
                             <div class="ls-option">
                                 <label>
                                     <input type="radio" name="rotate_action" value="replace" checked>
-                                    <strong>Reemplazar slug</strong>
-                                    <span class="description">El slug anterior dejará de funcionar</span>
+                                    <strong>${strings.replaceSlug || 'Replace slug'}</strong>
+                                    <span class="description">${strings.replaceSlugDesc || 'The previous slug will stop working'}</span>
                                 </label>
                             </div>
                             <div class="ls-option">
                                 <label>
                                     <input type="radio" name="rotate_action" value="alias">
-                                    <strong>Añadir alias</strong>
-                                    <span class="description">El slug anterior seguirá funcionando</span>
+                                    <strong>${strings.addAlias || 'Add alias'}</strong>
+                                    <span class="description">${strings.addAliasDesc || 'The previous slug will keep working'}</span>
                                 </label>
                             </div>
                         </div>
                         
                         <div class="ls-new-slug-field">
-                            <label for="ls-new-slug">Nuevo slug (opcional):</label>
-                            <input type="text" id="ls-new-slug" placeholder="Dejar vacío para generar automáticamente">
+                            <label for="ls-new-slug">${strings.newSlugOptional || 'New slug (optional):'}</label>
+                            <input type="text" id="ls-new-slug" placeholder="${strings.leaveEmptyAutoGenerate || 'Leave empty to auto-generate'}">
                             <div id="ls-slug-validation-modal" class="ls-validation-message"></div>
                         </div>
                     </div>
                     <div class="ls-modal-footer">
-                        <button type="button" class="button-primary ls-confirm-rotate" data-link-id="${linkId}">Rotar Slug</button>
-                        <button type="button" class="button-secondary ls-modal-cancel">Cancelar</button>
+                        <button type="button" class="button-primary ls-confirm-rotate" data-link-id="${linkId}">${strings.rotateSlug || 'Rotate Slug'}</button>
+                        <button type="button" class="button-secondary ls-modal-cancel">${strings.cancelButton || 'Cancel'}</button>
                     </div>
                 </div>
             </div>
@@ -379,7 +380,7 @@
     var actionType = $('input[name="rotate_action"]:checked').val();
     var newSlug = $("#ls-new-slug").val().trim();
 
-    $button.prop("disabled", true).text("Rotando...");
+    $button.prop("disabled", true).text(((lsAdmin && lsAdmin.strings) ? lsAdmin.strings.rotating : 'Rotating...'));
 
     $.ajax({
       url: ajaxurl,
@@ -404,13 +405,13 @@
           closeModal();
           showNotice(response.data.message, "success");
         } else {
-          showNotice("Error: " + response.data, "error");
-          $button.prop("disabled", false).text("Rotar Slug");
+          showNotice(((lsAdmin && lsAdmin.strings) ? (lsAdmin.strings.errorPrefix + ' ') : 'Error: ') + response.data, "error");
+          $button.prop("disabled", false).text(((lsAdmin && lsAdmin.strings) ? lsAdmin.strings.rotateSlug : 'Rotate Slug'));
         }
       },
       error: function () {
-        showNotice("Error de conexión", "error");
-        $button.prop("disabled", false).text("Rotar Slug");
+        showNotice(((lsAdmin && lsAdmin.strings) ? lsAdmin.strings.connectionError : 'Connection error'), "error");
+        $button.prop("disabled", false).text(((lsAdmin && lsAdmin.strings) ? lsAdmin.strings.rotateSlug : 'Rotate Slug'));
       },
     });
   });
@@ -469,19 +470,19 @@
     var originalUrl = $button.data("original-url");
 
     if (!originalUrl) {
-      showNotice("Error: URL original requerida", "error");
+      showNotice(((lsAdmin && lsAdmin.strings) ? (lsAdmin.strings.errorPrefix + ' ' + lsAdmin.strings.originalUrlRequired) : 'Error: Original URL required'), "error");
       return;
     }
 
     if (
       !confirm(
-        "¿Generar un nuevo enlace corto? El enlace actual seguirá funcionando."
+        ((lsAdmin && lsAdmin.strings) ? lsAdmin.strings.confirmRegenerate : 'Generate a new short link? The current link will keep working.')
       )
     ) {
       return;
     }
 
-    $button.prop("disabled", true).text("Regenerando...");
+    $button.prop("disabled", true).text(((lsAdmin && lsAdmin.strings) ? lsAdmin.strings.regenerating : 'Regenerating...'));
 
     $.ajax({
       url: ajaxurl,
@@ -501,13 +502,13 @@
 
           showNotice(response.data.message, "success");
         } else {
-          showNotice("Error: " + response.data, "error");
-          $button.prop("disabled", false).text("Regenerar");
+          showNotice(((lsAdmin && lsAdmin.strings) ? (lsAdmin.strings.errorPrefix + ' ') : 'Error: ') + response.data, "error");
+          $button.prop("disabled", false).text(((lsAdmin && lsAdmin.strings) ? lsAdmin.strings.regenerate : 'Regenerate'));
         }
       },
       error: function () {
-        showNotice("Error de conexión", "error");
-        $button.prop("disabled", false).text("Regenerar");
+        showNotice(((lsAdmin && lsAdmin.strings) ? lsAdmin.strings.connectionError : 'Connection error'), "error");
+        $button.prop("disabled", false).text(((lsAdmin && lsAdmin.strings) ? lsAdmin.strings.regenerate : 'Regenerate'));
       },
     });
   }
@@ -522,7 +523,7 @@
     var linkId = $button.data("post-id");
     var aliasSlug = $button.data("alias");
 
-    if (!confirm("¿Eliminar este alias? El enlace dejará de funcionar.")) {
+    if (!confirm(((lsAdmin && lsAdmin.strings) ? lsAdmin.strings.confirmDeleteAlias : 'Delete this alias? The link will stop working.'))) {
       return;
     }
 
@@ -566,7 +567,7 @@
       $("#ls_slug_validation")
         .removeClass("success")
         .addClass("error")
-        .text("El slug solo puede contener letras, números, guiones y guiones bajos")
+        .text(((lsAdmin && lsAdmin.strings) ? lsAdmin.strings.slugFormatError : 'The slug can only contain letters, numbers, hyphens and underscores'))
         .show();
       toggleUpdateButton(false);
       return;
@@ -597,7 +598,7 @@
           var message = data.message;
 
           if (!data.available && data.suggestion) {
-            message += ". Sugerencia: " + data.suggestion;
+            message += ". " + (((lsAdmin && lsAdmin.strings) ? lsAdmin.strings.suggestionPrefix : 'Suggestion:')) + " " + data.suggestion;
           }
 
           $target
@@ -614,7 +615,7 @@
           $target
             .removeClass("success")
             .addClass("error")
-            .text("Error al validar slug")
+            .text(((lsAdmin && lsAdmin.strings) ? lsAdmin.strings.slugValidationError : 'Error validating slug'))
             .show();
 
           // Deshabilitar botón en caso de error
@@ -628,7 +629,7 @@
         $target
           .removeClass("success")
           .addClass("error")
-          .text("Error de conexión al validar slug")
+          .text(((lsAdmin && lsAdmin.strings) ? lsAdmin.strings.slugValidationConnectionError : 'Connection error while validating slug'))
           .show();
 
         // Deshabilitar botón en caso de error de conexión
@@ -662,9 +663,7 @@
       $target
         .removeClass("success")
         .addClass("error")
-        .text(
-          "' + (((typeof lsAdmin!=='undefined'&&lsAdmin.strings)?lsAdmin.strings.urlMustStartWithHttp:'URL must start with http:// or https:// and include a valid domain')) + '"
-        )
+        .text(((lsAdmin && lsAdmin.strings) ? lsAdmin.strings.urlMustStartWithHttp : 'URL must start with http:// or https:// and include a valid domain'))
         .show();
       return;
     }
@@ -677,7 +676,7 @@
       $target
         .removeClass("success")
         .addClass("error")
-        .text("El dominio no parece ser válido")
+        .text(((lsAdmin && lsAdmin.strings) ? lsAdmin.strings.domainInvalid : 'Domain does not seem valid'))
         .show();
       return;
     }
@@ -714,7 +713,7 @@
           $target
             .removeClass("success")
             .addClass("error")
-            .text("Error al validar URL")
+            .text(((lsAdmin && lsAdmin.strings) ? lsAdmin.strings.errorUrlValidation : 'Error validating URL'))
             .show();
         }
       },
@@ -723,7 +722,7 @@
         $target
           .removeClass("success")
           .addClass("error")
-          .text("Error de conexión al validar URL")
+          .text(((lsAdmin && lsAdmin.strings) ? lsAdmin.strings.errorUrlValidationConnection : 'Connection error while validating URL'))
           .show();
       },
     });

@@ -34,36 +34,36 @@ class LS_AJAX
   {
     // Verificar nonce
     if (!check_ajax_referer('ls_admin_nonce', 'nonce', false)) {
-      wp_send_json_error('Nonce inválido');
+      wp_send_json_error(__('Invalid nonce', 'link-shortener-wordpressongoing'));
     }
 
     // Verificar permisos
     if (!current_user_can('edit_posts')) {
-      wp_send_json_error('Permisos insuficientes');
+      wp_send_json_error(__('Insufficient permissions', 'link-shortener-wordpressongoing'));
     }
 
-    $post_id = isset($_POST['post_id']) ? intval($_POST['post_id']) : 0;
-    $url = isset($_POST['url']) ? esc_url_raw($_POST['url']) : '';
+    $post_id = isset($_POST['post_id']) ? absint($_POST['post_id']) : 0;
+    $url = isset($_POST['url']) ? esc_url_raw(wp_unslash($_POST['url'])) : '';
 
     if (!$post_id || !$url) {
-      wp_send_json_error('Datos incompletos');
+      wp_send_json_error(__('Incomplete data', 'link-shortener-wordpressongoing'));
     }
 
     // Verificar que el post existe y es público
     $post = get_post($post_id);
     if (!$post || $post->post_status !== 'publish') {
-      wp_send_json_error('El contenido no es público');
+      wp_send_json_error(__('Content is not public', 'link-shortener-wordpressongoing'));
     }
 
     // Verificar que no existe ya un enlace para esta URL
     $existing_link = $this->get_link_by_url($url);
     if ($existing_link) {
-      wp_send_json_error('Ya existe un enlace corto para esta URL');
+      wp_send_json_error(__('A short link already exists for this URL', 'link-shortener-wordpressongoing'));
     }
 
     // Validar URL
     if (!filter_var($url, FILTER_VALIDATE_URL) || !preg_match('/^https?:\/\//', $url)) {
-      wp_send_json_error('URL inválida');
+      wp_send_json_error(__('Invalid URL', 'link-shortener-wordpressongoing'));
     }
 
     // Generar tag automático basado en el tipo de post
@@ -76,7 +76,7 @@ class LS_AJAX
     $link_id = $this->create_short_link($url, '', $auto_tag);
 
     if (!$link_id) {
-      wp_send_json_error('Error al crear el enlace corto');
+      wp_send_json_error(__('Error creating short link', 'link-shortener-wordpressongoing'));
     }
 
     // Obtener datos del enlace creado
@@ -88,7 +88,7 @@ class LS_AJAX
       'link_id' => $link_id,
       'short_url' => $short_url,
       'slug' => $slug,
-      'message' => 'Enlace corto generado exitosamente',
+      'message' => __('Short link generated successfully', 'link-shortener-wordpressongoing'),
       'html' => $this->render_short_link_display($link_id, $short_url, $url)
     ));
   }
@@ -100,26 +100,26 @@ class LS_AJAX
   {
     // Verificar nonce
     if (!check_ajax_referer('ls_admin_nonce', 'nonce', false)) {
-      wp_send_json_error('Nonce inválido');
+      wp_send_json_error(__('Invalid nonce', 'link-shortener-wordpressongoing'));
     }
 
     // Verificar permisos
     if (!current_user_can('edit_posts')) {
-      wp_send_json_error('Permisos insuficientes');
+      wp_send_json_error(__('Insufficient permissions', 'link-shortener-wordpressongoing'));
     }
 
-    $link_id = isset($_POST['link_id']) ? intval($_POST['link_id']) : 0;
-    $action_type = isset($_POST['action_type']) ? sanitize_text_field($_POST['action_type']) : 'replace';
-    $new_slug = isset($_POST['new_slug']) ? sanitize_title($_POST['new_slug']) : '';
+    $link_id = isset($_POST['link_id']) ? absint($_POST['link_id']) : 0;
+    $action_type = isset($_POST['action_type']) ? sanitize_text_field(wp_unslash($_POST['action_type'])) : 'replace';
+    $new_slug = isset($_POST['new_slug']) ? sanitize_title(wp_unslash($_POST['new_slug'])) : '';
 
     if (!$link_id) {
-      wp_send_json_error('ID de enlace requerido');
+      wp_send_json_error(__('Link ID required', 'link-shortener-wordpressongoing'));
     }
 
     // Verificar que el enlace existe
     $link_post = get_post($link_id);
     if (!$link_post || $link_post->post_type !== 'ls_link') {
-      wp_send_json_error('Enlace no encontrado');
+      wp_send_json_error(__('Link not found', 'link-shortener-wordpressongoing'));
     }
 
     $original_url = get_post_meta($link_id, '_ls_original_url', true);
@@ -133,12 +133,14 @@ class LS_AJAX
 
     // Verificar que el nuevo slug es único
     if (!$this->is_slug_unique($new_slug, $link_id)) {
-      wp_send_json_error('El slug "' . $new_slug . '" ya está en uso. Intenta con otro.');
+      // translators: %s: the slug that is already in use
+      wp_send_json_error(sprintf(__('The slug "%s" is already in use. Try another one.', 'link-shortener-wordpressongoing'), $new_slug));
     }
 
     // Verificar que no esté reservado
     if ($this->is_reserved_slug($new_slug)) {
-      wp_send_json_error('El slug "' . $new_slug . '" está reservado.');
+      // translators: %s: the slug that is reserved
+      wp_send_json_error(sprintf(__('The slug "%s" is reserved.', 'link-shortener-wordpressongoing'), $new_slug));
     }
 
     if ($action_type === 'replace') {
@@ -146,7 +148,7 @@ class LS_AJAX
       update_post_meta($link_id, '_ls_slug', $new_slug);
 
       $new_url = home_url($prefix_used . $new_slug);
-      $message = 'Slug reemplazado exitosamente. El anterior ya no es válido.';
+      $message = __('Slug replaced successfully. The previous one is no longer valid.', 'link-shortener-wordpressongoing');
 
     } elseif ($action_type === 'alias') {
       // Añadir como alias
@@ -159,13 +161,13 @@ class LS_AJAX
       update_post_meta($link_id, '_ls_aliases', $aliases);
 
       $new_url = home_url($prefix_used . $new_slug);
-      $message = 'Alias añadido exitosamente. Ambos slugs siguen siendo válidos.';
+      $message = __('Alias added successfully. Both slugs remain valid.', 'link-shortener-wordpressongoing');
     } else {
-      wp_send_json_error('Tipo de acción inválido');
+      wp_send_json_error(__('Invalid action type', 'link-shortener-wordpressongoing'));
     }
 
     // Actualizar título del post
-    $parsed_url = parse_url($original_url);
+    $parsed_url = wp_parse_url($original_url);
     $host = isset($parsed_url['host']) ? $parsed_url['host'] : 'unknown';
     $auto_title = $new_slug . ' | ' . $host;
 
@@ -191,23 +193,23 @@ class LS_AJAX
   {
     // Verificar nonce
     if (!check_ajax_referer('ls_admin_nonce', 'nonce', false)) {
-      wp_send_json_error('Nonce inválido');
+      wp_send_json_error(__('Invalid nonce', 'link-shortener-wordpressongoing'));
     }
 
     // Verificar permisos
     if (!current_user_can('edit_posts')) {
-      wp_send_json_error('Permisos insuficientes');
+      wp_send_json_error(__('Insufficient permissions', 'link-shortener-wordpressongoing'));
     }
 
-    $original_url = isset($_POST['original_url']) ? esc_url_raw($_POST['original_url']) : '';
+    $original_url = isset($_POST['original_url']) ? esc_url_raw(wp_unslash($_POST['original_url'])) : '';
 
     if (empty($original_url)) {
-      wp_send_json_error('URL original requerida');
+      wp_send_json_error(__('Original URL required', 'link-shortener-wordpressongoing'));
     }
 
     // Validar URL
     if (!filter_var($original_url, FILTER_VALIDATE_URL) || !preg_match('/^https?:\/\//', $original_url)) {
-      wp_send_json_error('URL inválida');
+      wp_send_json_error(__('Invalid URL', 'link-shortener-wordpressongoing'));
     }
 
     // Detectar el tipo de post desde la URL para asignar tag automático
@@ -228,7 +230,7 @@ class LS_AJAX
     $new_link_id = $this->create_short_link($original_url, '', $auto_tag);
 
     if (!$new_link_id) {
-      wp_send_json_error('Error al crear el nuevo enlace corto');
+      wp_send_json_error(__('Error creating new short link', 'link-shortener-wordpressongoing'));
     }
 
     // Obtener datos del nuevo enlace creado
@@ -241,7 +243,7 @@ class LS_AJAX
       'new_slug' => $new_slug,
       'new_short_url' => $new_short_url,
       'original_url' => $original_url,
-      'message' => 'Nuevo enlace corto generado exitosamente. El anterior sigue funcionando.',
+      'message' => __('New short link generated successfully. The previous one still works.', 'link-shortener-wordpressongoing'),
       'html' => $this->render_short_link_display($new_link_id, $new_short_url, $original_url)
     ));
   }
@@ -253,24 +255,24 @@ class LS_AJAX
   {
     // Verificar nonce
     if (!check_ajax_referer('ls_admin_nonce', 'nonce', false)) {
-      wp_send_json_error('Nonce inválido');
+      wp_send_json_error(__('Invalid nonce', 'link-shortener-wordpressongoing'));
     }
 
     // Verificar permisos
     if (!current_user_can('delete_posts')) {
-      wp_send_json_error('Permisos insuficientes');
+      wp_send_json_error(__('Insufficient permissions', 'link-shortener-wordpressongoing'));
     }
 
-    $link_id = isset($_POST['link_id']) ? intval($_POST['link_id']) : 0;
+    $link_id = isset($_POST['link_id']) ? absint($_POST['link_id']) : 0;
 
     if (!$link_id) {
-      wp_send_json_error('ID de enlace requerido');
+      wp_send_json_error(__('Link ID required', 'link-shortener-wordpressongoing'));
     }
 
     // Verificar que el enlace existe
     $link_post = get_post($link_id);
     if (!$link_post || $link_post->post_type !== 'ls_link') {
-      wp_send_json_error('Enlace no encontrado');
+      wp_send_json_error(__('Link not found', 'link-shortener-wordpressongoing'));
     }
 
     // Eliminar el post
@@ -278,10 +280,10 @@ class LS_AJAX
 
     if ($result) {
       wp_send_json_success(array(
-        'message' => 'Enlace eliminado exitosamente'
+        'message' => __('Link deleted successfully', 'link-shortener-wordpressongoing')
       ));
     } else {
-      wp_send_json_error('Error al eliminar el enlace');
+      wp_send_json_error(__('Error deleting link', 'link-shortener-wordpressongoing'));
     }
   }
 
@@ -292,27 +294,27 @@ class LS_AJAX
   {
     // Verificar nonce y permisos
     if (!check_ajax_referer('ls_admin_nonce', 'nonce', false)) {
-      wp_send_json_error('Nonce inválido');
+      wp_send_json_error(__('Invalid nonce', 'link-shortener-wordpressongoing'));
     }
 
     if (!current_user_can('edit_posts')) {
-      wp_send_json_error('Permisos insuficientes');
+      wp_send_json_error(__('Insufficient permissions', 'link-shortener-wordpressongoing'));
     }
 
-    $link_id = isset($_POST['link_id']) ? intval($_POST['link_id']) : 0;
-    $alias_slug = isset($_POST['alias_slug']) ? sanitize_title($_POST['alias_slug']) : '';
+    $link_id = isset($_POST['link_id']) ? absint($_POST['link_id']) : 0;
+    $alias_slug = isset($_POST['alias_slug']) ? sanitize_title(wp_unslash($_POST['alias_slug'])) : '';
 
     if (!$link_id || empty($alias_slug)) {
-      wp_send_json_error('Datos requeridos faltantes');
+      wp_send_json_error(__('Missing required data', 'link-shortener-wordpressongoing'));
     }
 
     // Verificar unicidad y reservas
     if (!$this->is_slug_unique($alias_slug, $link_id)) {
-      wp_send_json_error('El alias ya está en uso');
+      wp_send_json_error(__('Alias is already in use', 'link-shortener-wordpressongoing'));
     }
 
     if ($this->is_reserved_slug($alias_slug)) {
-      wp_send_json_error('El alias está reservado');
+      wp_send_json_error(__('Alias is reserved', 'link-shortener-wordpressongoing'));
     }
 
     // Añadir alias
@@ -330,7 +332,7 @@ class LS_AJAX
     wp_send_json_success(array(
       'alias_slug' => $alias_slug,
       'alias_url' => $alias_url,
-      'message' => 'Alias añadido exitosamente'
+      'message' => __('Alias added successfully', 'link-shortener-wordpressongoing')
     ));
   }
 
@@ -341,24 +343,24 @@ class LS_AJAX
   {
     // Verificar nonce y permisos
     if (!check_ajax_referer('ls_admin_nonce', 'nonce', false)) {
-      wp_send_json_error('Nonce inválido');
+      wp_send_json_error(__('Invalid nonce', 'link-shortener-wordpressongoing'));
     }
 
     if (!current_user_can('edit_posts')) {
-      wp_send_json_error('Permisos insuficientes');
+      wp_send_json_error(__('Insufficient permissions', 'link-shortener-wordpressongoing'));
     }
 
-    $link_id = isset($_POST['link_id']) ? intval($_POST['link_id']) : 0;
-    $alias_slug = isset($_POST['alias_slug']) ? sanitize_text_field($_POST['alias_slug']) : '';
+    $link_id = isset($_POST['link_id']) ? absint($_POST['link_id']) : 0;
+    $alias_slug = isset($_POST['alias_slug']) ? sanitize_text_field(wp_unslash($_POST['alias_slug'])) : '';
 
     if (!$link_id || empty($alias_slug)) {
-      wp_send_json_error('Datos requeridos faltantes');
+      wp_send_json_error(__('Missing required data', 'link-shortener-wordpressongoing'));
     }
 
     // Remover alias
     $aliases = get_post_meta($link_id, '_ls_aliases', true);
     if (!is_array($aliases)) {
-      wp_send_json_error('No hay aliases para remover');
+      wp_send_json_error(__('No aliases to remove', 'link-shortener-wordpressongoing'));
     }
 
     $key = array_search($alias_slug, $aliases);
@@ -367,10 +369,10 @@ class LS_AJAX
       update_post_meta($link_id, '_ls_aliases', array_values($aliases));
 
       wp_send_json_success(array(
-        'message' => 'Alias removido exitosamente'
+        'message' => __('Alias removed successfully', 'link-shortener-wordpressongoing')
       ));
     } else {
-      wp_send_json_error('Alias no encontrado');
+      wp_send_json_error(__('Alias not found', 'link-shortener-wordpressongoing'));
     }
   }
 
@@ -381,14 +383,14 @@ class LS_AJAX
   {
     // Verificar nonce
     if (!check_ajax_referer('ls_admin_nonce', 'nonce', false)) {
-      wp_send_json_error('Nonce inválido');
+      wp_send_json_error(__('Invalid nonce', 'link-shortener-wordpressongoing'));
     }
 
-    $slug = isset($_POST['slug']) ? sanitize_title($_POST['slug']) : '';
+    $slug = isset($_POST['slug']) ? sanitize_title(wp_unslash($_POST['slug'])) : '';
     $exclude_id = isset($_POST['exclude_id']) ? intval($_POST['exclude_id']) : 0;
 
     if (empty($slug)) {
-      wp_send_json_error('Slug requerido');
+      wp_send_json_error(__('Slug required', 'link-shortener-wordpressongoing'));
     }
 
     $is_available = $this->is_slug_unique($slug, $exclude_id);
@@ -397,20 +399,20 @@ class LS_AJAX
     if ($is_reserved) {
       wp_send_json_success(array(
         'available' => false,
-        'message' => __('This slug is reserved', 'fulltimeforce-link-shortener'),
+        'message' => __('This slug is reserved', 'link-shortener-wordpressongoing'),
         'type' => 'reserved'
       ));
     } elseif ($is_available) {
       wp_send_json_success(array(
         'available' => true,
-        'message' => __('Slug available', 'fulltimeforce-link-shortener'),
+        'message' => __('Slug available', 'link-shortener-wordpressongoing'),
         'type' => 'available'
       ));
     } else {
       $suggested = $this->generate_unique_slug('', $slug);
       wp_send_json_success(array(
         'available' => false,
-        'message' => __('Slug not available', 'fulltimeforce-link-shortener'),
+        'message' => __('Slug not available', 'link-shortener-wordpressongoing'),
         'suggestion' => $suggested,
         'type' => 'taken'
       ));
@@ -424,15 +426,15 @@ class LS_AJAX
   {
     // Verificar nonce
     if (!check_ajax_referer('ls_admin_nonce', 'nonce', false)) {
-      wp_send_json_error('Nonce inválido');
+      wp_send_json_error(__('Invalid nonce', 'link-shortener-wordpressongoing'));
     }
 
-    $url = isset($_POST['url']) ? trim($_POST['url']) : '';
+    $url = isset($_POST['url']) ? esc_url_raw(wp_unslash($_POST['url'])) : '';
 
     if (empty($url)) {
       wp_send_json_success(array(
         'valid' => false,
-        'message' => __( 'Valid URL', 'fulltimeforce-link-shortener' ),
+        'message' => __( 'Valid URL', 'link-shortener-wordpressongoing' ),
         'type' => 'empty'
       ));
       return;
@@ -442,7 +444,7 @@ class LS_AJAX
     if (!preg_match('/^https?:\/\//', $url)) {
       wp_send_json_success(array(
         'valid' => false,
-        'message' => __( 'URL must start with http:// or https://', 'fulltimeforce-link-shortener' ),
+        'message' => __( 'URL must start with http:// or https://', 'link-shortener-wordpressongoing' ),
         'type' => 'no_protocol'
       ));
       return;
@@ -453,18 +455,18 @@ class LS_AJAX
     if (!filter_var($sanitized_url, FILTER_VALIDATE_URL)) {
       wp_send_json_success(array(
         'valid' => false,
-        'message' => 'Formato de URL inválido',
+        'message' => __('Invalid URL format', 'link-shortener-wordpressongoing'),
         'type' => 'invalid_format'
       ));
       return;
     }
 
     // Verificar que tenga un dominio válido
-    $parsed_url = parse_url($sanitized_url);
+    $parsed_url = wp_parse_url($sanitized_url);
     if (!isset($parsed_url['host']) || empty($parsed_url['host'])) {
       wp_send_json_success(array(
         'valid' => false,
-        'message' => 'La URL debe incluir un dominio válido',
+        'message' => __('URL must include a valid domain', 'link-shortener-wordpressongoing'),
         'type' => 'no_domain'
       ));
       return;
@@ -474,7 +476,7 @@ class LS_AJAX
     if (!filter_var($parsed_url['host'], FILTER_VALIDATE_DOMAIN, FILTER_FLAG_HOSTNAME)) {
       wp_send_json_success(array(
         'valid' => false,
-        'message' => 'El dominio no es válido',
+        'message' => __('Domain is not valid', 'link-shortener-wordpressongoing'),
         'type' => 'invalid_domain'
       ));
       return;
@@ -488,7 +490,7 @@ class LS_AJAX
         if (strpos($sanitized_url, $site_url . ltrim($prefix, '/')) === 0) {
           wp_send_json_success(array(
             'valid' => false,
-            'message' => 'No se puede crear un enlace corto que apunte a otro enlace corto',
+            'message' => __('Cannot create a short link that points to another short link', 'link-shortener-wordpressongoing'),
             'type' => 'circular'
           ));
           return;
@@ -505,7 +507,7 @@ class LS_AJAX
 
       wp_send_json_success(array(
         'valid' => false,
-        'message' => 'Ya existe un enlace corto para esta URL',
+        'message' => __('A short link already exists for this URL', 'link-shortener-wordpressongoing'),
         'existing_url' => $existing_short_url,
         'type' => 'exists'
       ));
@@ -514,7 +516,7 @@ class LS_AJAX
 
     wp_send_json_success(array(
       'valid' => true,
-      'message' => __( 'Valid URL', 'fulltimeforce-link-shortener' ),
+      'message' => __( 'Valid URL', 'link-shortener-wordpressongoing' ),
       'type' => 'valid'
     ));
   }
@@ -538,7 +540,7 @@ class LS_AJAX
     $post_data = array(
       'post_type' => 'ls_link',
       'post_status' => 'publish',
-      'post_title' => $slug . ' | ' . parse_url($url, PHP_URL_HOST),
+      'post_title' => $slug . ' | ' . wp_parse_url($url, PHP_URL_HOST),
       'post_name' => $slug,
     );
 
@@ -556,6 +558,7 @@ class LS_AJAX
 
   private function get_link_by_url($url)
   {
+    // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key, WordPress.DB.SlowDBQuery.slow_db_query_meta_value -- Necessary to find existing link by URL
     $posts = get_posts(array(
       'post_type' => 'ls_link',
       'meta_key' => '_ls_original_url',
@@ -624,32 +627,34 @@ class LS_AJAX
   {
     global $wpdb;
 
-    $query = $wpdb->prepare(
-      "SELECT post_id FROM {$wpdb->postmeta} 
-             WHERE meta_key = '_ls_slug' 
-             AND meta_value = %s 
-             AND post_id != %d",
-      $slug,
-      $exclude_post_id
+    // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Required for real-time slug uniqueness validation
+    $result = $wpdb->get_var(
+      $wpdb->prepare(
+        "SELECT post_id FROM {$wpdb->postmeta} 
+               WHERE meta_key = '_ls_slug' 
+               AND meta_value = %s 
+               AND post_id != %d",
+        $slug,
+        $exclude_post_id
+      )
     );
-
-    $result = $wpdb->get_var($query);
 
     if ($result) {
       return false;
     }
 
-    // Verificar aliases
-    $alias_query = $wpdb->prepare(
-      "SELECT post_id FROM {$wpdb->postmeta} 
-             WHERE meta_key = '_ls_aliases' 
-             AND meta_value LIKE %s 
-             AND post_id != %d",
-      '%"' . $slug . '"%',
-      $exclude_post_id
+    // Verificar también en aliases
+    // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Required for real-time slug uniqueness validation
+    $alias_result = $wpdb->get_var(
+      $wpdb->prepare(
+        "SELECT post_id FROM {$wpdb->postmeta} 
+               WHERE meta_key = '_ls_aliases' 
+               AND meta_value LIKE %s 
+               AND post_id != %d",
+        '%' . $wpdb->esc_like('"' . $slug . '"') . '%',
+        $exclude_post_id
+      )
     );
-
-    $alias_result = $wpdb->get_var($alias_query);
 
     return !$alias_result;
   }

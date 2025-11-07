@@ -13,15 +13,15 @@ if (!defined('ABSPATH')) {
 ?>
 
 <div class="wrap">
-  <h1><?= esc_html(get_admin_page_title()); ?></h1>
+  <h1><?php echo esc_html(get_admin_page_title()); ?></h1>
 
   <div class="notice notice-info">
-    <p><?php _e('Welcome to the main Link Shortener configuration panel.', 'fulltimeforce-link-shortener'); ?></p>
+    <p><?php echo esc_html__('Welcome to the main Link Shortener configuration panel.', 'link-shortener-wordpressongoing'); ?></p>
   </div>
 
   <div class="card">
-    <h2><?php _e('Plugin Summary', 'fulltimeforce-link-shortener'); ?></h2>
-    <p><?php _e('This plugin allows you to create custom short links', 'fulltimeforce-link-shortener'); ?></p>
+    <h2><?php echo esc_html__('Plugin Summary', 'link-shortener-wordpressongoing'); ?></h2>
+    <p><?php echo esc_html__('This plugin allows you to create custom short links', 'link-shortener-wordpressongoing'); ?></p>
     <!-- <p>Este plugin te permite crear enlaces cortos personalizados con las siguientes características:</p> -->
     <!-- <ul>
       <li>Gestión completa de enlaces cortos</li>
@@ -32,16 +32,16 @@ if (!defined('ABSPATH')) {
   </div>
 
   <div class="card">
-    <h2><?php _e('Quick Access', 'fulltimeforce-link-shortener'); ?></h2>
+    <h2><?php echo esc_html__('Quick Access', 'link-shortener-wordpressongoing'); ?></h2>
     <p>
-      <a href="<?= admin_url('admin.php?page=ff-link-shortener-all-links'); ?>" class="button button-primary">
-        <?php _e('View All Links', 'fulltimeforce-link-shortener'); ?>
+      <a href="<?php echo esc_url(admin_url('admin.php?page=ff-link-shortener-all-links')); ?>" class="button button-primary">
+        <?php echo esc_html__('View All Links', 'link-shortener-wordpressongoing'); ?>
       </a>
-      <a href="<?= admin_url('admin.php?page=ff-link-shortener-add-new'); ?>" class="button">
-        <?php _e('Add New Link', 'fulltimeforce-link-shortener'); ?>
+      <a href="<?php echo esc_url(admin_url('admin.php?page=ff-link-shortener-add-new')); ?>" class="button">
+        <?php echo esc_html__('Add New Link', 'link-shortener-wordpressongoing'); ?>
       </a>
-      <a href="<?= admin_url('admin.php?page=ff-link-shortener-categories'); ?>" class="button">
-        <?php _e('Manage Categories', 'fulltimeforce-link-shortener'); ?>
+      <a href="<?php echo esc_url(admin_url('admin.php?page=ff-link-shortener-categories')); ?>" class="button">
+        <?php echo esc_html__('Manage Categories', 'link-shortener-wordpressongoing'); ?>
       </a>
     </p>
   </div>

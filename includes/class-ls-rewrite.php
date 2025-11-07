@@ -70,7 +70,8 @@ class LS_Rewrite
   public function parse_request($wp)
   {
     // Debug: log la URL completa
-    $request_uri = $_SERVER['REQUEST_URI'] ?? '';
+    // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Sanitized with esc_url_raw() for logging
+    $request_uri = isset($_SERVER['REQUEST_URI']) ? esc_url_raw(wp_unslash($_SERVER['REQUEST_URI'])) : '';
     error_log("LS Debug: REQUEST_URI = {$request_uri}");
     error_log("LS Debug: Query vars recibidas: " . print_r($wp->query_vars, true));
 
@@ -115,11 +116,13 @@ class LS_Rewrite
 
     // Debug: información del estado actual
     error_log("LS Debug template_redirect: is_404=" . (is_404() ? 'true' : 'false'));
-    error_log("LS Debug template_redirect: REQUEST_URI=" . ($_SERVER['REQUEST_URI'] ?? ''));
+    // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Sanitized with esc_url_raw() for logging
+    error_log("LS Debug template_redirect: REQUEST_URI=" . (isset($_SERVER['REQUEST_URI']) ? esc_url_raw(wp_unslash($_SERVER['REQUEST_URI'])) : ''));
 
     // Intentar detectar si es un enlace corto manualmente
-    $request_uri = $_SERVER['REQUEST_URI'] ?? '';
-    $site_url = parse_url(home_url(), PHP_URL_PATH) ?? '';
+    // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Sanitized with esc_url_raw()
+    $request_uri = isset($_SERVER['REQUEST_URI']) ? esc_url_raw(wp_unslash($_SERVER['REQUEST_URI'])) : '';
+    $site_url = wp_parse_url(home_url(), PHP_URL_PATH) ?? '';
 
     // Remover el path del sitio si existe
     if ($site_url && $site_url !== '/') {
@@ -196,6 +199,7 @@ class LS_Rewrite
     error_log("LS Debug: Buscando slug '{$slug}' en la base de datos");
 
     // Buscar por slug principal
+    // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Required for real-time link redirection
     $post_id = $wpdb->get_var($wpdb->prepare(
       "SELECT post_id FROM {$wpdb->postmeta} 
              WHERE meta_key = '_ls_slug' 
@@ -319,6 +323,7 @@ class LS_Rewrite
     global $wpdb;
 
     // Verificar slug principal
+    // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Required for real-time slug availability check
     $main_check = $wpdb->get_var($wpdb->prepare(
       "SELECT post_id FROM {$wpdb->postmeta} 
              WHERE meta_key = '_ls_slug' 
@@ -334,14 +339,17 @@ class LS_Rewrite
     }
 
     // Verificar aliases
-    $alias_check = $wpdb->get_results($wpdb->prepare(
-      "SELECT post_id, meta_value FROM {$wpdb->postmeta} 
-             WHERE meta_key = '_ls_aliases'
-             AND post_id != %d 
-             AND meta_value LIKE %s",
-      $exclude_post_id,
-      '%"' . $wpdb->esc_like($slug) . '"%'
-    ));
+    // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Required for real-time slug availability check
+    $alias_check = $wpdb->get_results(
+      $wpdb->prepare(
+        "SELECT post_id, meta_value FROM {$wpdb->postmeta} 
+               WHERE meta_key = '_ls_aliases'
+               AND post_id != %d 
+               AND meta_value LIKE %s",
+        $exclude_post_id,
+        '%' . $wpdb->esc_like($slug) . '%'
+      )
+    );
 
     foreach ($alias_check as $alias_row) {
       $aliases = maybe_unserialize($alias_row->meta_value);

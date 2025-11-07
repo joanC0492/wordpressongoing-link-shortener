@@ -1,23 +1,14 @@
 <?php
 /**
- * Plugin Name: Wordpressongoing Link Shortener
- * Plugin URI: https://github.com/joanC0492/fulltimeforce-link-shortener
- * Description: Plugin to shorten links with prefix management.
+ * Plugin Name: Link Shortener by WP Ongoing
+ * Description: A complete WordPress plugin for creating and managing shortened links with customizable prefixes
  * Version: 1.0.0
- * Author: Joan Cochachi
+ * Author: Wordpress Ongoing
  * Author URI: https://wordpressongoing.com
+ * Text Domain: link-shortener-wordpressongoing
+ * Domain Path: /languages
  * License: GPL v2 or later
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html
- * Text Domain: fulltimeforce-link-shortener
- * Domain Path: /languages
- * Requires at least: 5.0
- * Tested up to: 6.8
- * Requires PHP: 7.4
- * Network: false
- * 
- * @package FulltimeforceLS
- * @version 1.0.0
- * @since 1.0.0
  */
 
 // Evitar acceso directo
@@ -142,34 +133,34 @@ class Fulltimeforce_Link_Shortener
   public function load_textdomain()
   {
     // Determinar el idioma de WordPress
-    $locale = apply_filters('plugin_locale', determine_locale(), 'fulltimeforce-link-shortener');
-    
+    $locale = apply_filters('plugin_locale', determine_locale(), 'link-shortener-wordpressongoing');
+
     // Forzar carga de traducciones
-    unload_textdomain('fulltimeforce-link-shortener');
-    
+    unload_textdomain('link-shortener-wordpressongoing');
+
     // Cargar desde idiomas del plugin
     $loaded = load_textdomain(
-      'fulltimeforce-link-shortener',
-      $this->plugin_path . 'languages/fulltimeforce-link-shortener-' . $locale . '.mo'
+      'link-shortener-wordpressongoing',
+      $this->plugin_path . 'languages/link-shortener-wordpressongoing-' . $locale . '.mo'
     );
-    
-    // Si no se cargó, intentar con formato corto (es_ES.mo en lugar de fulltimeforce-link-shortener-es_ES.mo)
+
+    // Si no se cargó, intentar con formato corto (es_ES.mo en lugar de link-shortener-wordpressongoing-es_ES.mo)
     if (!$loaded) {
       $loaded = load_textdomain(
-        'fulltimeforce-link-shortener',
+        'link-shortener-wordpressongoing',
         $this->plugin_path . 'languages/' . $locale . '.mo'
       );
     }
-    
+
     // Fallback a load_plugin_textdomain
     if (!$loaded) {
       load_plugin_textdomain(
-        'fulltimeforce-link-shortener',
+        'link-shortener-wordpressongoing',
         false,
         dirname(plugin_basename(__FILE__)) . '/languages'
       );
     }
-    
+
     // Log para debug
     if (defined('WP_DEBUG') && WP_DEBUG) {
       error_log("LS i18n: Locale: $locale, Loaded: " . ($loaded ? 'yes' : 'no'));
@@ -204,6 +195,7 @@ class Fulltimeforce_Link_Shortener
     }
 
     // También cargar si estamos en el CPT ls_link
+    // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Solo para determinar si cargar scripts
     if (isset($_GET['post_type']) && $_GET['post_type'] === 'ls_link') {
       $is_relevant_page = true;
     }
@@ -249,49 +241,55 @@ class Fulltimeforce_Link_Shortener
       'homeUrl' => home_url('/'),
       'currentPrefix' => get_option('ls_current_prefix', '/l/'),
       'strings' => array(
-        'confirmDelete' => __('Are you sure you want to delete this link? This action cannot be undone.', 'fulltimeforce-link-shortener'),
-        'confirmDeleteAlias' => __('Delete this alias? The link will stop working.', 'fulltimeforce-link-shortener'),
-        'copySuccess' => __('Copied!', 'fulltimeforce-link-shortener'),
-        'copyError' => __('Copy error', 'fulltimeforce-link-shortener'),
-        'generating' => __('Generating...', 'fulltimeforce-link-shortener'),
-        'rotating' => __('Rotating...', 'fulltimeforce-link-shortener'),
-        'deleting' => __('Deleting...', 'fulltimeforce-link-shortener'),
-        'errorPrefix' => __('Error:', 'fulltimeforce-link-shortener'),
-        'successPrefix' => __('Success:', 'fulltimeforce-link-shortener'),
-        'errorIncompleteData' => __('Incomplete data', 'fulltimeforce-link-shortener'),
-        'errorNoNonce' => __('Could not obtain security token', 'fulltimeforce-link-shortener'),
-        'connectionError' => __('Connection error', 'fulltimeforce-link-shortener'),
-        'copyFallbackError' => __('Copy failed. Select and copy manually:', 'fulltimeforce-link-shortener'),
-        'linkCopiedPrefix' => __('Link copied:', 'fulltimeforce-link-shortener'),
-        'generateShortLink' => __('Generate short link', 'fulltimeforce-link-shortener'),
-        'noUrlToCopy' => __('No URL to copy', 'fulltimeforce-link-shortener'),
-        'urlMustStartWithHttp' => __('URL must start with http:// or https:// and include a valid domain', 'fulltimeforce-link-shortener'),
-        'domainInvalid' => __('Domain does not seem valid', 'fulltimeforce-link-shortener'),
-        'errorUrlValidation' => __('Error validating URL', 'fulltimeforce-link-shortener'),
-        'errorUrlValidationConnection' => __('Connection error while validating URL', 'fulltimeforce-link-shortener'),
-        'cannotSaveSlugInUse' => __('Cannot save: the slug is already in use. Please choose another slug.', 'fulltimeforce-link-shortener'),
-        'confirmMoveToTrash' => __('Are you sure you want to move this link to trash?', 'fulltimeforce-link-shortener')
-      ,
+        'confirmDelete' => __('Are you sure you want to delete this link? This action cannot be undone.', 'link-shortener-wordpressongoing'),
+        'confirmDeleteAlias' => __('Delete this alias? The link will stop working.', 'link-shortener-wordpressongoing'),
+        'copySuccess' => __('Copied!', 'link-shortener-wordpressongoing'),
+        'copyError' => __('Copy error', 'link-shortener-wordpressongoing'),
+        'generating' => __('Generating...', 'link-shortener-wordpressongoing'),
+        'rotating' => __('Rotating...', 'link-shortener-wordpressongoing'),
+        'deleting' => __('Deleting...', 'link-shortener-wordpressongoing'),
+        'errorPrefix' => __('Error:', 'link-shortener-wordpressongoing'),
+        'successPrefix' => __('Success:', 'link-shortener-wordpressongoing'),
+        'errorIncompleteData' => __('Incomplete data', 'link-shortener-wordpressongoing'),
+        'errorNoNonce' => __('Could not obtain security token', 'link-shortener-wordpressongoing'),
+        'connectionError' => __('Connection error', 'link-shortener-wordpressongoing'),
+        'copyFallbackError' => __('Copy failed. Select and copy manually:', 'link-shortener-wordpressongoing'),
+        'linkCopiedPrefix' => __('Link copied:', 'link-shortener-wordpressongoing'),
+        'generateShortLink' => __('Generate short link', 'link-shortener-wordpressongoing'),
+        'noUrlToCopy' => __('No URL to copy', 'link-shortener-wordpressongoing'),
+        'urlMustStartWithHttp' => __('URL must start with http:// or https:// and include a valid domain', 'link-shortener-wordpressongoing'),
+        'domainInvalid' => __('Domain does not seem valid', 'link-shortener-wordpressongoing'),
+        'errorUrlValidation' => __('Error validating URL', 'link-shortener-wordpressongoing'),
+        'errorUrlValidationConnection' => __('Connection error while validating URL', 'link-shortener-wordpressongoing'),
+        'cannotSaveSlugInUse' => __('Cannot save: the slug is already in use. Please choose another slug.', 'link-shortener-wordpressongoing'),
+        'confirmMoveToTrash' => __('Are you sure you want to move this link to trash?', 'link-shortener-wordpressongoing')
+        ,
         // Additional strings used in JS UI
-        'rotateSlug' => __('Rotate Slug', 'fulltimeforce-link-shortener'),
-        'delete' => __('Delete', 'fulltimeforce-link-shortener'),
-        'regenerate' => __('Regenerate', 'fulltimeforce-link-shortener'),
-        'regenerating' => __('Regenerating...', 'fulltimeforce-link-shortener'),
-        'generatedAndCopiedPrefix' => __('Link generated and copied to clipboard:', 'fulltimeforce-link-shortener'),
-        'generatedCopyFailedPrefix' => __('Link generated. Could not copy automatically:', 'fulltimeforce-link-shortener'),
-        'linkIdRequired' => __('Link ID required', 'fulltimeforce-link-shortener'),
-        'originalUrlRequired' => __('Original URL required', 'fulltimeforce-link-shortener'),
-        'confirmRegenerate' => __('Generate a new short link? The current link will keep working.', 'fulltimeforce-link-shortener'),
-        'cancelButton' => __('Cancel', 'fulltimeforce-link-shortener'),
-        'rotateModalTitle' => __('Rotate Slug', 'fulltimeforce-link-shortener'),
-        'closeModalAria' => __('Close modal', 'fulltimeforce-link-shortener'),
-        'rotateModalIntro' => __('Choose how you want to update this link\'s slug:', 'fulltimeforce-link-shortener'),
-        'replaceSlug' => __('Replace slug', 'fulltimeforce-link-shortener'),
-        'replaceSlugDesc' => __('The previous slug will stop working', 'fulltimeforce-link-shortener'),
-        'addAlias' => __('Add alias', 'fulltimeforce-link-shortener'),
-        'addAliasDesc' => __('The previous slug will keep working', 'fulltimeforce-link-shortener'),
-        'pleaseEnterOriginalUrl' => __('Please enter an original URL.', 'fulltimeforce-link-shortener'),
-        'pleaseEnterValidUrl' => __('Please enter a valid URL (must start with http:// or https://).', 'fulltimeforce-link-shortener')
+        'rotateSlug' => __('Rotate Slug', 'link-shortener-wordpressongoing'),
+        'delete' => __('Delete', 'link-shortener-wordpressongoing'),
+        'regenerate' => __('Regenerate', 'link-shortener-wordpressongoing'),
+        'regenerating' => __('Regenerating...', 'link-shortener-wordpressongoing'),
+        'generatedAndCopiedPrefix' => __('Link generated and copied to clipboard:', 'link-shortener-wordpressongoing'),
+        'generatedCopyFailedPrefix' => __('Link generated. Could not copy automatically:', 'link-shortener-wordpressongoing'),
+        'linkIdRequired' => __('Link ID required', 'link-shortener-wordpressongoing'),
+        'originalUrlRequired' => __('Original URL required', 'link-shortener-wordpressongoing'),
+        'confirmRegenerate' => __('Generate a new short link? The current link will keep working.', 'link-shortener-wordpressongoing'),
+        'cancelButton' => __('Cancel', 'link-shortener-wordpressongoing'),
+        'rotateModalTitle' => __('Rotate Slug', 'link-shortener-wordpressongoing'),
+        'closeModalAria' => __('Close modal', 'link-shortener-wordpressongoing'),
+        'rotateModalIntro' => __('Choose how you want to update this link\'s slug:', 'link-shortener-wordpressongoing'),
+        'replaceSlug' => __('Replace slug', 'link-shortener-wordpressongoing'),
+        'replaceSlugDesc' => __('The previous slug will stop working', 'link-shortener-wordpressongoing'),
+        'addAlias' => __('Add alias', 'link-shortener-wordpressongoing'),
+        'addAliasDesc' => __('The previous slug will keep working', 'link-shortener-wordpressongoing'),
+        'newSlugOptional' => __('New slug (optional):', 'link-shortener-wordpressongoing'),
+        'leaveEmptyAutoGenerate' => __('Leave empty to auto-generate', 'link-shortener-wordpressongoing'),
+        'slugFormatError' => __('The slug can only contain letters, numbers, hyphens and underscores', 'link-shortener-wordpressongoing'),
+        'slugValidationError' => __('Error validating slug', 'link-shortener-wordpressongoing'),
+        'slugValidationConnectionError' => __('Connection error while validating slug', 'link-shortener-wordpressongoing'),
+        'suggestionPrefix' => __('Suggestion:', 'link-shortener-wordpressongoing'),
+        'pleaseEnterOriginalUrl' => __('Please enter an original URL.', 'link-shortener-wordpressongoing'),
+        'pleaseEnterValidUrl' => __('Please enter a valid URL (must start with http:// or https://).', 'link-shortener-wordpressongoing')
       )
     ));
   }
@@ -310,7 +308,7 @@ class Fulltimeforce_Link_Shortener
     $relevant_screens = array('ls_link', 'edit-ls_link', 'link-shortener_page_link-shortener-settings', 'edit-page', 'edit-post');
 
     if (in_array($screen->id, $relevant_screens) || strpos($screen->id, 'link-shortener') !== false || strpos($screen->id, 'edit-') === 0) {
-      echo '<input type="hidden" id="ls_admin_nonce" name="ls_admin_nonce" value="' . wp_create_nonce('ls_admin_nonce') . '">';
+      echo '<input type="hidden" id="ls_admin_nonce" name="ls_admin_nonce" value="' . esc_attr(wp_create_nonce('ls_admin_nonce')) . '">';
     }
   }
 
@@ -319,8 +317,8 @@ class Fulltimeforce_Link_Shortener
    */
   public function plugin_action_links($links)
   {
-    $settings_link = '<a href="' . admin_url('admin.php?page=link-shortener-settings') . '">' . __('Settings', 'fulltimeforce-link-shortener') . '</a>';
-    $links_link = '<a href="' . admin_url('edit.php?post_type=ls_link') . '">' . __('Links', 'fulltimeforce-link-shortener') . '</a>';
+    $settings_link = '<a href="' . esc_url(admin_url('admin.php?page=link-shortener-settings')) . '">' . esc_html__('Settings', 'link-shortener-wordpressongoing') . '</a>';
+    $links_link = '<a href="' . esc_url(admin_url('edit.php?post_type=ls_link')) . '">' . esc_html__('Links', 'link-shortener-wordpressongoing') . '</a>';
 
     array_unshift($links, $settings_link, $links_link);
 
@@ -330,17 +328,18 @@ class Fulltimeforce_Link_Shortener
   /**
    * Función de debug para verificar traducciones (solo en modo debug)
    */
-  public function debug_translations() {
-    if (!is_admin()) return;
-    
+  public function debug_translations()
+  {
+    if (!is_admin())
+      return;
+
     $locale = get_locale();
-    $textdomain = 'fulltimeforce-link-shortener';
-    
+
     // Test de traducciones
-    $test_string = __('Settings', $textdomain);
+    $test_string = __('Settings', 'link-shortener-wordpressongoing');
     $spanish_test = ($test_string === 'Ajustes');
-    
-    echo "<!-- LS i18n Debug: Locale: $locale, Test: '$test_string', ES: " . ($spanish_test ? 'SI' : 'NO') . " -->";
+
+    echo '<!-- LS i18n Debug: Locale: ' . esc_html($locale) . ', Test: \'' . esc_html($test_string) . '\', ES: ' . ($spanish_test ? 'SI' : 'NO') . ' -->';
   }
 
   /**
@@ -366,12 +365,12 @@ class Fulltimeforce_Link_Shortener
     // Verificar requisitos mínimos
     if (version_compare(PHP_VERSION, '7.4', '<')) {
       deactivate_plugins(plugin_basename(__FILE__));
-      wp_die(__('This plugin requires PHP 7.4 or higher.', 'fulltimeforce-link-shortener'));
+      wp_die(esc_html__('This plugin requires PHP 7.4 or higher.', 'link-shortener-wordpressongoing'));
     }
 
     if (version_compare($GLOBALS['wp_version'], '5.0', '<')) {
       deactivate_plugins(plugin_basename(__FILE__));
-      wp_die(__('This plugin requires WordPress 5.0 or higher.', 'fulltimeforce-link-shortener'));
+      wp_die(esc_html__('This plugin requires WordPress 5.0 or higher.', 'link-shortener-wordpressongoing'));
     }
 
     // Crear opciones por defecto

@@ -1,4 +1,4 @@
-Plugin: Wordpressongoing Link Shortener
+Plugin: Link Shortener by WP ongoing
 
 # ✅ Flujo funcional (UX)
 

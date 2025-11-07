@@ -34,8 +34,8 @@ class LS_Settings
   {
     // Menú principal
     add_menu_page(
-      __('Link Shortener', 'fulltimeforce-link-shortener'),
-      __('Link Shortener', 'fulltimeforce-link-shortener'),
+      __('Link Shortener', 'link-shortener-wordpressongoing'),
+      __('Link Shortener', 'link-shortener-wordpressongoing'),
       'manage_options',
       'link-shortener',
       array($this, 'admin_page'),
@@ -46,24 +46,24 @@ class LS_Settings
     // Submenús
     add_submenu_page(
       'link-shortener',
-      __('All Links', 'fulltimeforce-link-shortener'),
-      __('All Links', 'fulltimeforce-link-shortener'),
+      __('All Links', 'link-shortener-wordpressongoing'),
+      __('All Links', 'link-shortener-wordpressongoing'),
       'edit_posts',
       'edit.php?post_type=ls_link'
     );
 
     add_submenu_page(
       'link-shortener',
-      __('Add New', 'fulltimeforce-link-shortener'),
-      __('Add New', 'fulltimeforce-link-shortener'),
+      __('Add New', 'link-shortener-wordpressongoing'),
+      __('Add New', 'link-shortener-wordpressongoing'),
       'edit_posts',
       'post-new.php?post_type=ls_link'
     );
 
     add_submenu_page(
       'link-shortener',
-      __('Settings', 'fulltimeforce-link-shortener'),
-      __('Settings', 'fulltimeforce-link-shortener'),
+      __('Settings', 'link-shortener-wordpressongoing'),
+      __('Settings', 'link-shortener-wordpressongoing'),
       'manage_options',
       'link-shortener-settings',
       array($this, 'settings_page')
@@ -98,14 +98,14 @@ class LS_Settings
 
     add_settings_section(
       'ls_general_section',
-      __('General Settings', 'fulltimeforce-link-shortener'),
+      __('General Settings', 'link-shortener-wordpressongoing'),
       array($this, 'general_section_callback'),
       'ls_settings'
     );
 
     add_settings_field(
       'ls_current_prefix',
-      __('Short link prefix', 'fulltimeforce-link-shortener'),
+      __('Short link prefix', 'link-shortener-wordpressongoing'),
       array($this, 'prefix_field_callback'),
       'ls_settings',
       'ls_general_section'
@@ -132,7 +132,7 @@ class LS_Settings
 
     ?>
     <div class="wrap">
-      <h1><?php echo esc_html__('Link Shortener Settings', 'fulltimeforce-link-shortener'); ?></h1>
+      <h1><?php echo esc_html__('Link Shortener Settings', 'link-shortener-wordpressongoing'); ?></h1>
 
       <?php settings_errors(); ?>
 
@@ -145,26 +145,26 @@ class LS_Settings
             ?>
 
             <div class="ls-prefix-preview">
-              <h4><?php echo esc_html__('Link preview:', 'fulltimeforce-link-shortener'); ?></h4>
+              <h4><?php echo esc_html__('Link preview:', 'link-shortener-wordpressongoing'); ?></h4>
               <code id="ls-preview-url"><?php echo esc_html(home_url() . $current_prefix . 'example'); ?></code>
             </div>
 
-            <?php submit_button(__('Save Settings', 'fulltimeforce-link-shortener')); ?>
+            <?php submit_button(__('Save Settings', 'link-shortener-wordpressongoing')); ?>
           </form>
 
           <?php if (HIDDEN != true): ?>
             <?php if (count($prefix_history) > 1): ?>
               <div class="ls-prefix-history">
-                <h3><?php echo esc_html__('Prefix History', 'fulltimeforce-link-shortener'); ?></h3>
+                <h3><?php echo esc_html__('Prefix History', 'link-shortener-wordpressongoing'); ?></h3>
                 <p class="description">
-                  <?php echo esc_html__('All previously used prefixes remain active to preserve existing links. New links will use the current prefix.', 'fulltimeforce-link-shortener'); ?>
+                  <?php echo esc_html__('All previously used prefixes remain active to preserve existing links. New links will use the current prefix.', 'link-shortener-wordpressongoing'); ?>
                 </p>
                 <ul class="ls-prefix-list">
                   <?php foreach ($prefix_history as $prefix): ?>
                     <li>
                       <code><?php echo esc_html($prefix); ?></code>
                       <?php if ($prefix === $current_prefix): ?>
-                        <span class="ls-current-badge"><?php echo esc_html__('Current', 'fulltimeforce-link-shortener'); ?></span>
+                        <span class="ls-current-badge"><?php echo esc_html__('Current', 'link-shortener-wordpressongoing'); ?></span>
                       <?php endif; ?>
                     </li>
                   <?php endforeach; ?>
@@ -177,28 +177,28 @@ class LS_Settings
         <?php if (HIDDEN != true): ?>
           <div class="ls-settings-sidebar">
             <div class="ls-stats-widget">
-              <h3><?php echo esc_html__('Statistics', 'fulltimeforce-link-shortener'); ?></h3>
+              <h3><?php echo esc_html__('Statistics', 'link-shortener-wordpressongoing'); ?></h3>
               <div class="ls-stat-item">
                 <span class="ls-stat-number"><?php echo number_format($stats['total_links']); ?></span>
-                <span class="ls-stat-label"><?php echo esc_html__('Links created', 'fulltimeforce-link-shortener'); ?></span>
+                <span class="ls-stat-label"><?php echo esc_html__('Links created', 'link-shortener-wordpressongoing'); ?></span>
               </div>
               <div class="ls-stat-item">
                 <span class="ls-stat-number"><?php echo count($prefix_history); ?></span>
-                <span class="ls-stat-label"><?php echo esc_html__('Prefixes used', 'fulltimeforce-link-shortener'); ?></span>
+                <span class="ls-stat-label"><?php echo esc_html__('Prefixes used', 'link-shortener-wordpressongoing'); ?></span>
               </div>
             </div>
 
             <div class="ls-help-widget">
-              <h3><?php echo esc_html__('Help', 'fulltimeforce-link-shortener'); ?></h3>
+              <h3><?php echo esc_html__('Help', 'link-shortener-wordpressongoing'); ?></h3>
               <ul>
-                <li><strong><?php echo esc_html__('Prefix:', 'fulltimeforce-link-shortener'); ?></strong>
-                  <?php echo esc_html__('Only enter the prefix without slashes (e.g., l, short, go)', 'fulltimeforce-link-shortener'); ?>
+                <li><strong><?php echo esc_html__('Prefix:', 'link-shortener-wordpressongoing'); ?></strong>
+                  <?php echo esc_html__('Only enter the prefix without slashes (e.g., l, short, go)', 'link-shortener-wordpressongoing'); ?>
                 </li>
-                <li><strong><?php echo esc_html__('Changes:', 'fulltimeforce-link-shortener'); ?></strong>
-                  <?php echo esc_html__('Existing links will keep their original prefix', 'fulltimeforce-link-shortener'); ?>
+                <li><strong><?php echo esc_html__('Changes:', 'link-shortener-wordpressongoing'); ?></strong>
+                  <?php echo esc_html__('Existing links will keep their original prefix', 'link-shortener-wordpressongoing'); ?>
                 </li>
-                <li><strong><?php echo esc_html__('Example:', 'fulltimeforce-link-shortener'); ?></strong>
-                  <?php echo esc_html__('With prefix "l" the link will be domain.com/l/slug', 'fulltimeforce-link-shortener'); ?>
+                <li><strong><?php echo esc_html__('Example:', 'link-shortener-wordpressongoing'); ?></strong>
+                  <?php echo esc_html__('With prefix "l" the link will be domain.com/l/slug', 'link-shortener-wordpressongoing'); ?>
                 </li>
               </ul>
             </div>
@@ -330,7 +330,7 @@ class LS_Settings
    */
   public function general_section_callback()
   {
-    echo '<p>' . esc_html__('Configure the prefix used for new short links.', 'fulltimeforce-link-shortener') . '</p>';
+    echo '<p>' . esc_html__('Configure the prefix used for new short links.', 'link-shortener-wordpressongoing') . '</p>';
   }
 
   /**
@@ -352,7 +352,7 @@ class LS_Settings
       <span class="ls-slug-preview">/slug</span>
     </div>
     <p class="description">
-      <?php echo esc_html__('Only enter the prefix (e.g., l, short, go). Only letters, numbers, dashes (-) and underscores (_) are allowed.', 'fulltimeforce-link-shortener'); ?>
+      <?php echo esc_html__('Only enter the prefix (e.g., l, short, go). Only letters, numbers, dashes (-) and underscores (_) are allowed.', 'link-shortener-wordpressongoing'); ?>
     </p>
     <div id="ls-prefix-validation" class="ls-validation-message"></div>
 
@@ -474,7 +474,7 @@ class LS_Settings
       add_settings_error(
         'ls_current_prefix',
         'empty_prefix',
-        'El prefijo no puede estar vacío.',
+        __('Prefix cannot be empty.', 'link-shortener-wordpressongoing'),
         'error'
       );
       return get_option('ls_current_prefix', '/l/');
@@ -485,7 +485,7 @@ class LS_Settings
       add_settings_error(
         'ls_current_prefix',
         'prefix_too_long',
-        'El prefijo no puede tener más de 20 caracteres.',
+        __('Prefix cannot be more than 20 characters.', 'link-shortener-wordpressongoing'),
         'error'
       );
       return get_option('ls_current_prefix', '/l/');
@@ -496,7 +496,7 @@ class LS_Settings
       add_settings_error(
         'ls_current_prefix',
         'invalid_prefix',
-        'El prefijo debe contener solo letras, números, guiones (-) y guiones bajos (_).',
+        __('Prefix must contain only letters, numbers, dashes (-) and underscores (_).', 'link-shortener-wordpressongoing'),
         'error'
       );
       return get_option('ls_current_prefix', '/l/');
@@ -525,7 +525,8 @@ class LS_Settings
         'ls_current_prefix',
         'prefix_updated',
         sprintf(
-          'Prefijo actualizado a %s. Los enlaces existentes continúan funcionando con sus prefijos originales.',
+          /* translators: %s: the new prefix value */
+          __('Prefix updated to %s. Existing links continue to work with their original prefixes.', 'link-shortener-wordpressongoing'),
           $formatted_prefix
         ),
         'success'
@@ -543,6 +544,7 @@ class LS_Settings
     global $wpdb;
 
     // Total de enlaces
+    // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Statistics query for dashboard display
     $total = $wpdb->get_var("
             SELECT COUNT(*) 
             FROM {$wpdb->posts} 
@@ -577,10 +579,10 @@ class LS_Settings
       'ajaxUrl' => admin_url('admin-ajax.php'),
       'nonce' => wp_create_nonce('ls_settings_nonce'),
       'strings' => array(
-        'prefixTooShort' => __('Prefix must be at least 1 character', 'fulltimeforce-link-shortener'),
-        'prefixTooLong' => __('Prefix cannot be more than 20 characters', 'fulltimeforce-link-shortener'),
-        'prefixAllowedChars' => __('Only letters, numbers, dashes (-) and underscores (_) are allowed', 'fulltimeforce-link-shortener'),
-        'prefixValid' => __('Valid prefix', 'fulltimeforce-link-shortener'),
+        'prefixTooShort' => __('Prefix must be at least 1 character', 'link-shortener-wordpressongoing'),
+        'prefixTooLong' => __('Prefix cannot be more than 20 characters', 'link-shortener-wordpressongoing'),
+        'prefixAllowedChars' => __('Only letters, numbers, dashes (-) and underscores (_) are allowed', 'link-shortener-wordpressongoing'),
+        'prefixValid' => __('Valid prefix', 'link-shortener-wordpressongoing'),
       ),
     ));
   }

@@ -196,7 +196,7 @@ class Link_Shortener_Post_Type
     // Verificar nonce
     if (
       !isset($_POST['link_shortener_meta_box_nonce']) ||
-      !wp_verify_nonce($_POST['link_shortener_meta_box_nonce'], 'link_shortener_meta_box')
+      !wp_verify_nonce(wp_unslash($_POST['link_shortener_meta_box_nonce']), 'link_shortener_meta_box')
     ) {
       return;
     }
@@ -207,7 +207,7 @@ class Link_Shortener_Post_Type
     }
 
     // Verificar permisos
-    if (isset($_POST['post_type']) && $_POST['post_type'] === self::POST_TYPE) {
+    if (isset($_POST['post_type']) && sanitize_text_field(wp_unslash($_POST['post_type'])) === self::POST_TYPE) {
       if (!current_user_can('edit_post', $post_id)) {
         return;
       }
@@ -215,12 +215,12 @@ class Link_Shortener_Post_Type
 
     // Guardar URL original
     if (isset($_POST['original_url'])) {
-      update_post_meta($post_id, '_original_url', sanitize_url($_POST['original_url']));
+      update_post_meta($post_id, '_original_url', esc_url_raw(wp_unslash($_POST['original_url'])));
     }
 
     // Guardar o generar código corto
     if (isset($_POST['short_code']) && !empty($_POST['short_code'])) {
-      $short_code = sanitize_text_field($_POST['short_code']);
+      $short_code = sanitize_text_field(wp_unslash($_POST['short_code']));
       // Verificar que no exista otro enlace con el mismo código
       if (!$this->short_code_exists($short_code, $post_id)) {
         update_post_meta($post_id, '_short_code', $short_code);
@@ -233,7 +233,7 @@ class Link_Shortener_Post_Type
 
     // Guardar descripción
     if (isset($_POST['description'])) {
-      update_post_meta($post_id, '_description', sanitize_textarea_field($_POST['description']));
+      update_post_meta($post_id, '_description', sanitize_textarea_field(wp_unslash($_POST['description'])));
     }
   }
 
@@ -242,6 +242,7 @@ class Link_Shortener_Post_Type
    */
   private function short_code_exists($short_code, $exclude_id = 0)
   {
+    // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- Necessary for short code uniqueness validation
     $query = new WP_Query(array(
       'post_type' => self::POST_TYPE,
       'meta_query' => array(
@@ -267,7 +268,7 @@ class Link_Shortener_Post_Type
     do {
       $short_code = '';
       for ($i = 0; $i < $length; $i++) {
-        $short_code .= $characters[rand(0, strlen($characters) - 1)];
+        $short_code .= $characters[wp_rand(0, strlen($characters) - 1)];
       }
     } while ($this->short_code_exists($short_code));
 
@@ -308,7 +309,7 @@ class Link_Shortener_Post_Type
       case 'actions':
         $short_code = get_post_meta($post_id, '_short_code', true);
         $short_url = home_url('/go/' . $short_code);
-        echo '<a href="' . get_edit_post_link($post_id) . '">Editar</a> | ';
+        echo '<a href="' . esc_url(get_edit_post_link($post_id)) . '">Editar</a> | ';
         echo '<a href="#" class="copy-link" data-url="' . esc_attr($short_url) . '">Copiar</a> | ';
         echo '<a href="' . esc_url($short_url) . '" target="_blank">Probar</a>';
         break;

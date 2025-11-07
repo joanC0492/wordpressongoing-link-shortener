@@ -51,17 +51,17 @@ class LS_CPT
   {
     $args = array(
       'labels' => array(
-        'name' => __('Short Links', 'fulltimeforce-link-shortener'),
-        'singular_name' => __('Short Link', 'fulltimeforce-link-shortener'),
-        'add_new' => __('Add New', 'fulltimeforce-link-shortener'),
-        'add_new_item' => __('Add New Link', 'fulltimeforce-link-shortener'),
-        'edit_item' => __('Edit Link', 'fulltimeforce-link-shortener'),
-        'new_item' => __('New Link', 'fulltimeforce-link-shortener'),
-        'view_item' => __('View Link', 'fulltimeforce-link-shortener'),
-        'search_items' => __('Search Links', 'fulltimeforce-link-shortener'),
-        'not_found' => __('No links found', 'fulltimeforce-link-shortener'),
-        'not_found_in_trash' => __('No links in trash', 'fulltimeforce-link-shortener'),
-        'all_items' => __('All Links', 'fulltimeforce-link-shortener'),
+        'name' => __('Short Links', 'link-shortener-wordpressongoing'),
+        'singular_name' => __('Short Link', 'link-shortener-wordpressongoing'),
+        'add_new' => __('Add New', 'link-shortener-wordpressongoing'),
+        'add_new_item' => __('Add New Link', 'link-shortener-wordpressongoing'),
+        'edit_item' => __('Edit Link', 'link-shortener-wordpressongoing'),
+        'new_item' => __('New Link', 'link-shortener-wordpressongoing'),
+        'view_item' => __('View Link', 'link-shortener-wordpressongoing'),
+        'search_items' => __('Search Links', 'link-shortener-wordpressongoing'),
+        'not_found' => __('No links found', 'link-shortener-wordpressongoing'),
+        'not_found_in_trash' => __('No links in trash', 'link-shortener-wordpressongoing'),
+        'all_items' => __('All Links', 'link-shortener-wordpressongoing'),
       ),
       'public' => false,
       'show_ui' => true,
@@ -108,10 +108,10 @@ class LS_CPT
     // Añadir nuestras columnas
     $new_columns = array();
     $new_columns['cb'] = $columns['cb'];
-    $new_columns['original_url'] = __('Original URL', 'fulltimeforce-link-shortener');
-    $new_columns['short_link'] = __('Short Link', 'fulltimeforce-link-shortener');
-    $new_columns['tag'] = __('Tag', 'fulltimeforce-link-shortener');
-    $new_columns['actions'] = __('Actions', 'fulltimeforce-link-shortener');
+    $new_columns['original_url'] = __('Original URL', 'link-shortener-wordpressongoing');
+    $new_columns['short_link'] = __('Short Link', 'link-shortener-wordpressongoing');
+    $new_columns['tag'] = __('Tag', 'link-shortener-wordpressongoing');
+    $new_columns['actions'] = __('Actions', 'link-shortener-wordpressongoing');
 
     return $new_columns;
   }
@@ -167,7 +167,7 @@ class LS_CPT
       if ($link_post && is_object($link_post)) {
         $this->display_short_link_column($link_post->ID, $post_url);
       } else {
-        echo '<button type="button" class="button ls-generate-link" data-post-id="' . esc_attr($post_id) . '" data-url="' . esc_attr($post_url) . '">' . esc_html__( 'Generate short link', 'fulltimeforce-link-shortener' ) . '</button>';
+        echo '<button type="button" class="button ls-generate-link" data-post-id="' . esc_attr($post_id) . '" data-url="' . esc_attr($post_url) . '">' . esc_html__( 'Generate short link', 'link-shortener-wordpressongoing' ) . '</button>';
       }
     }
   }
@@ -185,7 +185,7 @@ class LS_CPT
       echo '<div class="ls-short-link-display">';
       echo '<code>' . esc_html($short_url) . '</code>';
       echo '<div class="ls-link-actions">';
-      echo '<button type="button" class="button-secondary ls-copy-link" data-url="' . esc_attr($short_url) . '">' . esc_html__( 'Copy', 'fulltimeforce-link-shortener' ) . '</button>';
+      echo '<button type="button" class="button-secondary ls-copy-link" data-url="' . esc_attr($short_url) . '">' . esc_html__( 'Copy', 'link-shortener-wordpressongoing' ) . '</button>';
       echo '</div>';
       echo '</div>';
     }
@@ -209,16 +209,16 @@ class LS_CPT
       // echo '<button type="button" class="button-link-delete ls-delete-link" data-link-id="' . esc_attr($post_id) . '">Eliminar</button>';
       
       // width: 16px; height: 16px; vertical-align: middle;
-      echo '  <a href="' . esc_url($edit_url) . '" class="ls_link__btn ls_link__btn--edit" title="' . esc_attr__( 'Edit', 'fulltimeforce-link-shortener' ) . '">';
-      echo '    <img src="' . plugin_dir_url(__FILE__) . '../assets/img/plugin-icon-edit.png" alt="' . esc_attr__( 'Edit', 'fulltimeforce-link-shortener' ) . '" style="">';
+      echo '  <a href="' . esc_url($edit_url) . '" class="ls_link__btn ls_link__btn--edit" title="' . esc_attr__( 'Edit', 'link-shortener-wordpressongoing' ) . '">';
+      echo '    <img src="' . esc_url(plugin_dir_url(__FILE__) . '../assets/img/plugin-icon-edit.png') . '" alt="' . esc_attr__( 'Edit', 'link-shortener-wordpressongoing' ) . '" style="">';
       echo '  </a>';
       // 
-      echo '  <button type="button" class="ls_link__btn ls_link__btn--copy button-secondary ls-copy-link" data-url="' . esc_attr($short_url) . '" title="' . esc_attr__( 'Copy', 'fulltimeforce-link-shortener' ) . '">';
-      echo '    <img src="' . plugin_dir_url(__FILE__) . '../assets/img/plugin-icon-copy.png" alt="' . esc_attr__( 'Copy', 'fulltimeforce-link-shortener' ) . '" style="">';
+      echo '  <button type="button" class="ls_link__btn ls_link__btn--copy button-secondary ls-copy-link" data-url="' . esc_attr($short_url) . '" title="' . esc_attr__( 'Copy', 'link-shortener-wordpressongoing' ) . '">';
+      echo '    <img src="' . esc_url(plugin_dir_url(__FILE__) . '../assets/img/plugin-icon-copy.png') . '" alt="' . esc_attr__( 'Copy', 'link-shortener-wordpressongoing' ) . '" style="">';
       echo '  </button>';
       // 
-      echo '  <button type="button" class="ls_link__btn ls_link__btn--delete button-link-delete ls-delete-link" data-link-id="' . esc_attr($post_id) . '" title="' . esc_attr__( 'Delete', 'fulltimeforce-link-shortener' ) . '">';
-      echo '    <img src="' . plugin_dir_url(__FILE__) . '../assets/img/plugin-icon-delete.png" alt="' . esc_attr__( 'Delete', 'fulltimeforce-link-shortener' ) . '" style="">';
+      echo '  <button type="button" class="ls_link__btn ls_link__btn--delete button-link-delete ls-delete-link" data-link-id="' . esc_attr($post_id) . '" title="' . esc_attr__( 'Delete', 'link-shortener-wordpressongoing' ) . '">';
+      echo '    <img src="' . esc_url(plugin_dir_url(__FILE__) . '../assets/img/plugin-icon-delete.png') . '" alt="' . esc_attr__( 'Delete', 'link-shortener-wordpressongoing' ) . '" style="">';
       echo '  </button>';
       echo '</div>';
     }
@@ -229,6 +229,7 @@ class LS_CPT
    */
   private function get_link_by_url($url)
   {
+    // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key, WordPress.DB.SlowDBQuery.slow_db_query_meta_value -- Necessary to find existing link by URL
     $posts = get_posts(array(
       'post_type' => 'ls_link',
       'meta_key' => '_ls_original_url',
